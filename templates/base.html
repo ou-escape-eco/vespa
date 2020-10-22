@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}Vespa{% endblock %}</title>
+    </head>
+    <body>
+        <header>
+            <h1>Vespa</h1>
+        </header>
+        
+        <nav>
+            {% block nav %}
+                <p>
+
+                </p>
+            {% endblock %}
+        </nav>
+        
+      
+        <main>
+
+            {% block content %}
+            {% endblock %}
+
+        </main>
+
+    </body>
+</html>
