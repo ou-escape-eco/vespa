@@ -2,4 +2,16 @@
 
 {% block content %}
     <p>This interface makes available SuperWASP lightcurves for periodic variable stars that have been classified by Citizen Scientists using the <a href="https://www.zooniverse.org/projects/ajnorton/superwasp-variable-stars">SuperWASP Variable Stars Zooniverse project</a>. It will be updated with new classification results every 6 months. Last update on dd-mm-yyyy</p>
+
+    <p>Total stars: {{ stars|length }}</p>
+
+    {% for star in stars %}
+        <p>{{ star.superwasp_id }}</p>
+    {% endfor %}
+
+    <p>Total lightcurves: {{ lightcurves|length }}</p>
+
+    {% for lightcurve in lightcurves %}
+        <p>{{ lightcurve.star.superwasp_id }}, {{ lightcurve.period_number }}</p>
+    {% endfor %}
 {% endblock %}
