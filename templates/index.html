@@ -9,6 +9,7 @@
         <tr>
             <th>SuperWASP ID</th>
             <th>Period number</th>
+            <th>Period uncertainty</th>
             <th>Classification</th>
             <th>Zooniverse ID</th>
             <th>Lightcurve</th>
@@ -18,6 +19,7 @@
         <tr>
             <td>{{ star.superwasp_id }}</td>
             <td>{{ lightcurve.period_number }}</td>
+            <td>{{ lightcurve.get_period_uncertainty_display }}</td>
             <td>{{ lightcurve.get_classification_display }}</td>
             <td>{{ lightcurve.zooniversesubject.zooniverse_id }}</td>
             <td>{% if lightcurve.zooniversesubject.image_location %}<img src="{{ lightcurve.zooniversesubject.image_location }}" alt="" style="width: 300px; height: auto;">{% endif %}</td>
