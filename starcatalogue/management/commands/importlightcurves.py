@@ -26,21 +26,22 @@ class Command(BaseCommand):
             sigma = float(row[5])
             chi_squared = float(row[6])
 
+            try:
+                star = Star.objects.get(superwasp_id=superwasp_id)
+                lightcurve = FoldedLightcurve.objects.get(
+                    star=star,
+                    period_number=period_number,
+                )
+            except (Star.DoesNotExist, FoldedLightcurve.DoesNotExist):
+                continue
 
-            star, created = Star.objects.get_or_create(superwasp_id=superwasp_id)
-            lightcurve, created = FoldedLightcurve.objects.get_or_create(
-                star=star,
-                period_number=period_number,
-                defaults={
-                    'period_length': period_length,
-                    'sigma': sigma,
-                    'chi_squared': chi_squared,
-                }
-            )
+            lightcurve.period_length = period_length
+            lightcurve.sigma = sigma
+            lightcurve.chi_squared = chi_squared
+            lightcurve.save()
 
-            if created:
-                imported_total += 1
-                if imported_total >= IMPORT_LIMIT:
-                    break
+            imported_total += 1
+            if imported_total >= IMPORT_LIMIT:
+                break
         
         self.stdout.write("Total imported: {}".format(imported_total))

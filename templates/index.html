@@ -11,6 +11,7 @@
             <th>Period number</th>
             <th>Classification</th>
             <th>Zooniverse ID</th>
+            <th>Lightcurve</th>
         </tr>
     {% for star in stars %}
         {% for lightcurve in star.foldedlightcurve_set.all %}
@@ -19,6 +20,7 @@
             <td>{{ lightcurve.period_number }}</td>
             <td>{{ lightcurve.get_classification_display }}</td>
             <td>{{ lightcurve.zooniversesubject.zooniverse_id }}</td>
+            <td>{% if lightcurve.zooniversesubject.image_location %}<img src="{{ lightcurve.zooniversesubject.image_location }}" alt="" style="width: 300px; height: auto;">{% endif %}</td>
         </tr>
         {% endfor %}
     {% endfor %}

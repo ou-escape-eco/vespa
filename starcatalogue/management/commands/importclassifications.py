@@ -9,7 +9,8 @@ IMPORT_LIMIT = 1000
 
 
 class Command(BaseCommand):
-    help = 'Imports folded lightcurve data (results_total.dat)'
+    help = ('Creates records for stars, lightcurves, and Zooniverse subjects. '
+            'Imports classifications (class_top.csv) . Run this first.')
 
     def add_arguments(self, parser):
         parser.add_argument('file', nargs=1, type=open)
@@ -33,13 +34,14 @@ class Command(BaseCommand):
             lightcurve, created = FoldedLightcurve.objects.get_or_create(
                 star=star,
                 period_number=period_number,
-                defaults={
-                    'period_length': period_length,
-                    'classification': classification,
-                    'period_uncertainty': period_uncertainty,
-                    'classification_count': classification_count,
-                }
             )
+            
+            lightcurve.period_length = period_length
+            lightcurve.classification = classification
+            lightcurve.period_uncertainty = period_uncertainty
+            lightcurve.classification_count = classification_count
+            lightcurve.save()
+
             zooniverse_subject, created = ZooniverseSubject.objects.get_or_create(
                 zooniverse_id=subject_id, 
                 lightcurve=lightcurve,

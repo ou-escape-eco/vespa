@@ -31,7 +31,7 @@ class FoldedLightcurve(models.Model):
     star = models.ForeignKey(to=Star, on_delete=models.CASCADE)
 
     period_number = models.IntegerField()
-    period_length = models.FloatField()
+    period_length = models.FloatField(null=True)
     sigma = models.FloatField(null=True)
     chi_squared = models.FloatField(null=True)
     classification = models.IntegerField(choices=CLASSIFICATION_CHOICES, null=True)
