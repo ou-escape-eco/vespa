@@ -5,13 +5,22 @@
 
     <p>Total stars: {{ stars|length }}</p>
 
+    <table>
+        <tr>
+            <th>SuperWASP ID</th>
+            <th>Period number</th>
+            <th>Classification</th>
+            <th>Zooniverse ID</th>
+        </tr>
     {% for star in stars %}
-        <p>{{ star.superwasp_id }}</p>
+        {% for lightcurve in star.foldedlightcurve_set.all %}
+        <tr>
+            <td>{{ star.superwasp_id }}</td>
+            <td>{{ lightcurve.period_number }}</td>
+            <td>{{ lightcurve.get_classification_display }}</td>
+            <td>{{ lightcurve.zooniversesubject.zooniverse_id }}</td>
+        </tr>
+        {% endfor %}
     {% endfor %}
-
-    <p>Total lightcurves: {{ lightcurves|length }}</p>
-
-    {% for lightcurve in lightcurves %}
-        <p>{{ lightcurve.star.superwasp_id }}, {{ lightcurve.period_number }}</p>
-    {% endfor %}
+    </table>
 {% endblock %}

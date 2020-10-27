@@ -32,8 +32,8 @@ class FoldedLightcurve(models.Model):
 
     period_number = models.IntegerField()
     period_length = models.FloatField()
-    sigma = models.FloatField()
-    chi_squared = models.FloatField()
+    sigma = models.FloatField(null=True)
+    chi_squared = models.FloatField(null=True)
     classification = models.IntegerField(choices=CLASSIFICATION_CHOICES, null=True)
     period_uncertainty = models.IntegerField(choices=PERIOD_UNCERTAINTY_CHOICES, null=True)
     classification_count = models.IntegerField(null=True)
