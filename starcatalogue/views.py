@@ -4,5 +4,5 @@ from starcatalogue.models import Star, FoldedLightcurve
 
 
 def index(request):
-    stars = Star.objects.all()
+    stars = Star.objects.all()[:10]
     return render(request, 'index.html', context={'stars': stars})
