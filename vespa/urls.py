@@ -20,5 +20,7 @@ import starcatalogue.views
 
 urlpatterns = [
     path('', starcatalogue.views.index, name='index'),
+    path('browse/', starcatalogue.views.browse, name='browse'),
+    path('download/', starcatalogue.views.download, name='download'),
     path('admin/', admin.site.urls),
 ]
