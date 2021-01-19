@@ -19,4 +19,5 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          ghcr.io/ou-escape-eco/vespa:latest
+          tags: |
+            ghcr.io/ou-escape-eco/vespa:latest
