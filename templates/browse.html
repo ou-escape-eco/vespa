@@ -4,9 +4,12 @@
 
 {% block content %}
 
-  <div class="row">
-    <div class="col-2">
-      <div class="dropdown">
+<div class="row mt-5">
+  <div class="col">
+
+
+    <div class="btn-group">
+      <div class="btn-group">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Sort
         </button>
@@ -16,55 +19,98 @@
           <a class="dropdown-item" href="#">Something else here</a>
         </div>
       </div>
-    </div>
-    <div class="col-2">
-      <div class="dropdown">
+      <div class="btn-group">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Magnitude
         </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
+        <div class="dropdown-menu px-3" aria-labelledby="dropdownMenuButton">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Min</span>
+            </div>
+            <input type="text" class="form-control" placeholder="" aria-label="Minimum" aria-describedby="basic-addon1">
+          </div>    
+          
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Max</span>
+            </div>
+            <input type="text" class="form-control" placeholder="" aria-label="Maximum" aria-describedby="basic-addon1">
+          </div> 
         </div>
-      </div>
-    </div>
-    <div class="col-2">
-      <div class="dropdown">
+        </div>
+        <div class="btn-group">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Period
         </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
+        <div class="dropdown-menu px-3" aria-labelledby="dropdownMenuButton">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Min</span>
+            </div>
+            <input type="text" class="form-control" placeholder="" aria-label="Minimum" aria-describedby="basic-addon1">
+          </div>    
+          
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Max</span>
+            </div>
+            <input type="text" class="form-control" placeholder="" aria-label="Maximum" aria-describedby="basic-addon1">
+          </div> 
         </div>
-      </div>
-    </div>
-    <div class="col-2">
-      <div class="dropdown">
+        </div>
+        <div class="btn-group">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Variable type
         </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
+        <div class="dropdown-menu px-3" aria-labelledby="dropdownMenuButton">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" checked>
+            <label class="form-check-label" for="defaultCheck1">
+              Pulsator
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" checked>
+            <label class="form-check-label" for="defaultCheck1">
+              Rotator
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" checked>
+            <label class="form-check-label" for="defaultCheck1">
+              EA/EB
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" checked>
+            <label class="form-check-label" for="defaultCheck1">
+              EW
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" checked>
+            <label class="form-check-label" for="defaultCheck1">
+              Unknown
+            </label>
+          </div>
         </div>
-      </div>
+        </div>
+        <button type="button" class="btn btn-secondary">Download</button>
     </div>
-    <div class="col">
-      <nav aria-label="Catalogue navigation">
-          <ul class="pagination justify-content-end">
-            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">Next</a></li>
-          </ul>
-      </nav>
-   </div>
   </div>
+  <div class="col">
+    <nav aria-label="Catalogue navigation">
+      <ul class="pagination justify-content-end">
+        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+      </ul>
+  </nav>
+  </div>
+
 
     <div class="modal fade" id="lightcurveModal" tabindex="-1" aria-labelledby="lightcurveModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -86,6 +132,7 @@
         <thead>
             <tr>
                 <th scope="col">SuperWASP ID</th>
+                <th scope="col">Period</th>
                 <th scope="col">Period number</th>
                 <th scope="col">Period uncertainty</th>
                 <th scope="col">Classification</th>
@@ -98,6 +145,7 @@
             {% for lightcurve in star.foldedlightcurve_set.all %}
             <tr>
                 <td>{{ star.superwasp_id }}</td>
+                <td>{{ lightcurve.period_length }}</td>
                 <td>{{ lightcurve.period_number }}</td>
                 <td>{{ lightcurve.get_period_uncertainty_display }}</td>
                 <td>{{ lightcurve.get_classification_display }}</td>
