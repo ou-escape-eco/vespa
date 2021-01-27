@@ -3,7 +3,7 @@
 {% block title %}Browse the Catalogue{% endblock %}
 
 {% block content %}
-
+<form action="" method="GET">
 <div class="row mt-5">
   <div class="col">
 
@@ -28,14 +28,14 @@
             <div class="input-group-prepend">
               <span class="input-group-text" id="basic-addon1">Min</span>
             </div>
-            <input type="text" class="form-control" placeholder="" aria-label="Minimum" aria-describedby="basic-addon1">
+            <input type="text" name="min_mag" class="form-control" placeholder="" aria-label="Minimum" aria-describedby="basic-addon1">
           </div>    
           
           <div class="input-group mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="basic-addon1">Max</span>
             </div>
-            <input type="text" class="form-control" placeholder="" aria-label="Maximum" aria-describedby="basic-addon1">
+            <input type="text" name="max_mag" class="form-control" placeholder="" aria-label="Maximum" aria-describedby="basic-addon1">
           </div> 
         </div>
         </div>
@@ -48,14 +48,14 @@
             <div class="input-group-prepend">
               <span class="input-group-text" id="basic-addon1">Min</span>
             </div>
-            <input type="text" class="form-control" placeholder="" aria-label="Minimum" aria-describedby="basic-addon1">
+            <input type="text" name="min_period" class="form-control" placeholder="" value="{% if min_period %}{{ min_period }}{% endif %}" aria-label="Minimum" aria-describedby="basic-addon1">
           </div>    
           
           <div class="input-group mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text" id="basic-addon1">Max</span>
             </div>
-            <input type="text" class="form-control" placeholder="" aria-label="Maximum" aria-describedby="basic-addon1">
+            <input type="text" name="max_period" class="form-control" placeholder="" value="{% if max_period %}{{ max_period }}{% endif %}" aria-label="Maximum" aria-describedby="basic-addon1">
           </div> 
         </div>
         </div>
@@ -65,40 +65,42 @@
         </button>
         <div class="dropdown-menu px-3" aria-labelledby="dropdownMenuButton">
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" checked>
+            <input class="form-check-input" type="checkbox" name="type_pulsator" id="defaultCheck1" {% if type_pulsator %}checked {% endif %}>
             <label class="form-check-label" for="defaultCheck1">
               Pulsator
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" checked>
+            <input class="form-check-input" type="checkbox" name="type_rotator" id="defaultCheck1" {% if type_rotator %}checked {% endif %}>
             <label class="form-check-label" for="defaultCheck1">
               Rotator
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" checked>
+            <input class="form-check-input" type="checkbox" name="type_eaeb" id="defaultCheck1" {% if type_eaeb %}checked {% endif %}>
             <label class="form-check-label" for="defaultCheck1">
               EA/EB
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" checked>
+            <input class="form-check-input" type="checkbox" name="type_ew"  id="defaultCheck1" {% if type_ew %}checked {% endif %}>
             <label class="form-check-label" for="defaultCheck1">
               EW
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" checked>
+            <input class="form-check-input" type="checkbox" name="type_unknown" id="defaultCheck1" {% if type_unknown %}checked {% endif %}>
             <label class="form-check-label" for="defaultCheck1">
               Unknown
             </label>
           </div>
         </div>
         </div>
-        <button type="button" class="btn btn-secondary">Download</button>
+        <input type="submit" value="Apply" class="btn btn-secondary">
     </div>
   </div>
+</form>
+
   {% include "starcatalogue/pagination.html" %}
 
     <div class="modal fade" id="lightcurveModal" tabindex="-1" aria-labelledby="lightcurveModalLabel" aria-hidden="true">
@@ -130,18 +132,16 @@
             </tr>
         </thead>
         <tbody>
-        {% for star in object_list %}
-            {% for lightcurve in star.foldedlightcurve_set.all %}
+          {% for lightcurve in object_list %}
             <tr>
-                <td>{{ star.superwasp_id }}</td>
+                <td>{{ lightcurve.star.superwasp_id }}</td>
                 <td>{{ lightcurve.period_length }}</td>
-                <td>{{ star.ra }}</td>
-                <td>{{ star.dec }}</td>
+                <td>{{ lightcurve.star.ra }}</td>
+                <td>{{ lightcurve.star.dec }}</td>
                 <td>{{ lightcurve.get_classification_display }}</td>
                 <td><a href="https://www.zooniverse.org/projects/ajnorton/superwasp-variable-stars/talk/subjects/{{ lightcurve.zooniversesubject.zooniverse_id }}">View on Talk</a></td>
                 <td>{% if lightcurve.zooniversesubject.image_location %}<a href="#" data-toggle="modal" data-target="#lightcurveModal" data-url="{{ lightcurve.zooniversesubject.image_location }}" data-superwasp-id="{{ star.superwasp_id }}"><img src="{{ lightcurve.zooniversesubject.thumbnail_location }}" alt="" style="width: 100px; height: auto;"></a>{% endif %}</td>
             </tr>
-            {% endfor %}
         {% endfor %}
         </tbody>
     </table>
