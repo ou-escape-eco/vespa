@@ -1,15 +1,17 @@
-from django.shortcuts import render
+from django.views.generic.base import TemplateView
+from django.views.generic.list import ListView
 
 from starcatalogue.models import Star, FoldedLightcurve
 
 
-def index(request):
-    stars = Star.objects.all()[:10]
-    return render(request, 'index.html', context={'stars': stars})
+class StarListView(ListView):
+    model = Star
+    paginate_by = 20
 
-def browse(request):
-    stars = Star.objects.all()[:10]
-    return render(request, 'browse.html', context={'stars': stars})
 
-def download(request):
-    return render(request, 'download.html')
+class IndexListView(StarListView):
+    template_name = 'index.html'
+
+
+class DownloadView(TemplateView):
+    template_name = 'starcatalogue/download.html'

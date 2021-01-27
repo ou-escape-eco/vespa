@@ -99,18 +99,7 @@
         <button type="button" class="btn btn-secondary">Download</button>
     </div>
   </div>
-  <div class="col">
-    <nav aria-label="Catalogue navigation">
-      <ul class="pagination justify-content-end">
-        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item"><a class="page-link" href="#">Next</a></li>
-      </ul>
-  </nav>
-  </div>
-
+  {% include "starcatalogue/pagination.html" %}
 
     <div class="modal fade" id="lightcurveModal" tabindex="-1" aria-labelledby="lightcurveModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -141,7 +130,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for star in stars %}
+        {% for star in object_list %}
             {% for lightcurve in star.foldedlightcurve_set.all %}
             <tr>
                 <td>{{ star.superwasp_id }}</td>
@@ -157,16 +146,7 @@
         </tbody>
     </table>
 
-    
-    <nav aria-label="Catalogue navigation">
-        <ul class="pagination justify-content-end">
-          <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item"><a class="page-link" href="#">Next</a></li>
-        </ul>
-    </nav>
+    {% include "starcatalogue/pagination.html" %}
 
     <div class="jumbotron">
         <h2 class="display-4">Acknowledgements</h2>
