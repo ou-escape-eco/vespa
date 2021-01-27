@@ -1,8 +1,23 @@
 from django.db import models
 
+from astropy.coordinates import SkyCoord
+from astropy import units
+
 
 class Star(models.Model):
     superwasp_id = models.CharField(unique=True, max_length=26)
+
+    @property
+    def coords(self):
+        return SkyCoord(self.superwasp_id.replace('1SWASP', ''), unit=(units.hour, units.deg))
+
+    @property
+    def ra(self):
+        return self.coords.ra
+    
+    @property
+    def dec(self):
+        return self.coords.dec
 
 
 class FoldedLightcurve(models.Model):
@@ -46,3 +61,9 @@ class ZooniverseSubject(models.Model):
     subject_set_id = models.IntegerField(null=True)
     retired_at = models.DateTimeField(null=True)
     image_location = models.URLField(null=True)
+
+    @property
+    def thumbnail_location(self):
+        return 'https://thumbnails.zooniverse.org/100x80/{}'.format(
+            self.image_location.replace('https://', ''),
+        )

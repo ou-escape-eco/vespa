@@ -121,11 +121,11 @@
         <thead>
             <tr>
                 <th scope="col">SuperWASP ID</th>
-                <th scope="col">Period</th>
-                <th scope="col">Period number</th>
-                <th scope="col">Period uncertainty</th>
+                <th scope="col">Period (seconds)</th>
+                <th scope="col">RA</th>
+                <th scope="col">Dec</th>
                 <th scope="col">Classification</th>
-                <th scope="col">Zooniverse ID</th>
+                <th scope="col">Zooniverse Talk</th>
                 <th scope="col">Lightcurve</th>
             </tr>
         </thead>
@@ -135,11 +135,11 @@
             <tr>
                 <td>{{ star.superwasp_id }}</td>
                 <td>{{ lightcurve.period_length }}</td>
-                <td>{{ lightcurve.period_number }}</td>
-                <td>{{ lightcurve.get_period_uncertainty_display }}</td>
+                <td>{{ star.ra }}</td>
+                <td>{{ star.dec }}</td>
                 <td>{{ lightcurve.get_classification_display }}</td>
-                <td>{{ lightcurve.zooniversesubject.zooniverse_id }}</td>
-                <td>{% if lightcurve.zooniversesubject.image_location %}<a href="#" data-toggle="modal" data-target="#lightcurveModal" data-url="{{ lightcurve.zooniversesubject.image_location }}" data-superwasp-id="{{ star.superwasp_id }}"><img src="{{ lightcurve.zooniversesubject.image_location }}" alt="" style="width: 100px; height: auto;"></a>{% endif %}</td>
+                <td><a href="https://www.zooniverse.org/projects/ajnorton/superwasp-variable-stars/talk/subjects/{{ lightcurve.zooniversesubject.zooniverse_id }}">View on Talk</a></td>
+                <td>{% if lightcurve.zooniversesubject.image_location %}<a href="#" data-toggle="modal" data-target="#lightcurveModal" data-url="{{ lightcurve.zooniversesubject.image_location }}" data-superwasp-id="{{ star.superwasp_id }}"><img src="{{ lightcurve.zooniversesubject.thumbnail_location }}" alt="" style="width: 100px; height: auto;"></a>{% endif %}</td>
             </tr>
             {% endfor %}
         {% endfor %}
