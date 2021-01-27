@@ -16,14 +16,18 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         r = csv.reader(options['file'][0], delimiter=' ', skipinitialspace=True)
         imported_total = 0
-        for row in r:
-            subject_id = row[0]
-            superwasp_id = row[1]
-            period_number = int(row[2])
-            period_length = float(row[3])
-            classification = int(row[4])
-            period_uncertainty = float(row[5])
-            classification_count = int(row[6])
+        for count, row in enumerate(r):
+            try:
+                subject_id = row[0]
+                superwasp_id = row[1]
+                period_number = int(row[2])
+                period_length = float(row[3])
+                classification = int(row[4])
+                period_uncertainty = float(row[5])
+                classification_count = int(row[6])
+            except IndexError:
+                print('Warning: Skipping row {} due to IndexError'.format(count))
+                continue
 
             if classification == FoldedLightcurve.JUNK:
                 continue
