@@ -5,8 +5,6 @@ import csv
 from starcatalogue.models import Star, FoldedLightcurve, ZooniverseSubject
 
 
-IMPORT_LIMIT = 1000
-
 
 class Command(BaseCommand):
     help = ('Creates records for stars, lightcurves, and Zooniverse subjects. '
@@ -49,7 +47,5 @@ class Command(BaseCommand):
 
             if created:
                 imported_total += 1
-                if imported_total >= IMPORT_LIMIT:
-                    break
         
         self.stdout.write("Total imported: {}".format(imported_total))

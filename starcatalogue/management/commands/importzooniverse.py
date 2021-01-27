@@ -6,9 +6,6 @@ import json
 from starcatalogue.models import ZooniverseSubject
 
 
-IMPORT_LIMIT = 1000
-
-
 class Command(BaseCommand):
     help = 'Imports Zooniverse subject metadata (superwasp-variable-stars-subjects.csv)'
 
@@ -30,7 +27,5 @@ class Command(BaseCommand):
             zooniverse_subject.save()
 
             imported_total += 1
-            if imported_total >= IMPORT_LIMIT:
-                break
         
         self.stdout.write("Total imported: {}".format(imported_total))

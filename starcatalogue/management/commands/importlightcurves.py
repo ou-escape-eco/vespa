@@ -5,9 +5,6 @@ import csv
 from starcatalogue.models import Star, FoldedLightcurve
 
 
-IMPORT_LIMIT = 1000
-
-
 class Command(BaseCommand):
     help = 'Imports folded lightcurve data (results_total.dat)'
 
@@ -41,7 +38,5 @@ class Command(BaseCommand):
             lightcurve.save()
 
             imported_total += 1
-            if imported_total >= IMPORT_LIMIT:
-                break
         
         self.stdout.write("Total imported: {}".format(imported_total))
