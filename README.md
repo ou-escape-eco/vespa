@@ -1,6 +1,6 @@
 # Vespa
 
-The SuperWASP __V__ariabl__e__ __S__tar __P__hotometry __A__rchive.
+The SuperWASP **V**ariabl**e** **S**tar **P**hotometry **A**rchive.
 
 ## Data Import
 
