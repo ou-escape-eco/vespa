@@ -36,8 +36,8 @@
                       </li>
                 </ul>
             {% endblock %}
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Object ID or coordinates" aria-label="Search">
+            <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'browse' %}">
+                <input class="form-control mr-sm-2" type="text" placeholder="Object ID or coordinates" aria-label="Search" name="search" value="{% if search %}{{ search }}{% endif %}">
                 <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
               </form>
             </div>

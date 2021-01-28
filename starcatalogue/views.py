@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 
@@ -46,6 +47,18 @@ class StarListView(ListView):
 
         qs = qs.filter(classification__in=enabled_types)
 
+        self.search = self.request.GET.get('search', None)
+        if self.search:
+            search_filter = Q(star__superwasp_id=self.search)
+
+            try:
+                search_filter = search_filter | Q(zooniversesubject__zooniverse_id=int(self.search))
+                print(int(self.search))
+            except ValueError:
+                pass
+            
+            qs = qs.filter(search_filter)
+
         return qs
 
     def get_context_data(self, **kwargs):
@@ -57,6 +70,7 @@ class StarListView(ListView):
         context['type_ew'] = self.type_ew
         context['type_rotator'] = self.type_rotator
         context['type_unknown'] = self.type_unknown
+        context['search'] = self.search
         return context
 
 

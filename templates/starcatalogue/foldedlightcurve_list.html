@@ -134,7 +134,7 @@
         <tbody>
           {% for lightcurve in object_list %}
             <tr>
-                <td>{{ lightcurve.star.superwasp_id }}</td>
+                <td><a href="{% url 'browse' %}?search={{ lightcurve.star.superwasp_id|urlencode }}">{{ lightcurve.star.superwasp_id }}</a></td>
                 <td>{{ lightcurve.period_length }}</td>
                 <td>{{ lightcurve.star.ra }}</td>
                 <td>{{ lightcurve.star.dec }}</td>
