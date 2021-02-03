@@ -2,6 +2,7 @@ from django.db import models
 
 from astropy.coordinates import SkyCoord
 from astropy import units
+from humanize.time import naturaldelta
 
 
 class Star(models.Model):
@@ -52,6 +53,10 @@ class FoldedLightcurve(models.Model):
     classification = models.IntegerField(choices=CLASSIFICATION_CHOICES, null=True)
     period_uncertainty = models.IntegerField(choices=PERIOD_UNCERTAINTY_CHOICES, null=True)
     classification_count = models.IntegerField(null=True)
+
+    @property
+    def natural_period(self):
+        return naturaldelta(self.period_length)
 
 
 class ZooniverseSubject(models.Model):

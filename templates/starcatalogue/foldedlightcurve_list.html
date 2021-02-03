@@ -135,7 +135,7 @@
           {% for lightcurve in object_list %}
             <tr>
                 <td><a href="{% url 'browse' %}?search={{ lightcurve.star.superwasp_id|urlencode }}">{{ lightcurve.star.superwasp_id }}</a></td>
-                <td>{{ lightcurve.period_length }}</td>
+                <td>{{ lightcurve.period_length }} (~{{ lightcurve.natural_period }})</td>
                 <td>{{ lightcurve.star.ra }}</td>
                 <td>{{ lightcurve.star.dec }}</td>
                 <td>{{ lightcurve.get_classification_display }}</td>
