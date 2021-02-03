@@ -22,5 +22,6 @@ urlpatterns = [
     path('', starcatalogue.views.IndexListView.as_view(), name='index'),
     path('browse/', starcatalogue.views.StarListView.as_view(), name='browse'),
     path('download/', starcatalogue.views.DownloadView.as_view(), name='download'),
+    path('about/', starcatalogue.views.AboutView.as_view(), name='about'),
     path('admin/', admin.site.urls),
 ]

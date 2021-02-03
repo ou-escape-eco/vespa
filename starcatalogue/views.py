@@ -101,3 +101,7 @@ class IndexListView(StarListView):
 
 class DownloadView(TemplateView):
     template_name = 'starcatalogue/download.html'
+
+
+class AboutView(TemplateView):
+    template_name = 'starcatalogue/about.html'
