@@ -13,7 +13,7 @@ class Star(models.Model):
 
     @property
     def ra(self):
-        return self.coords.ra
+        return self.coords.ra.to_string(units.hour)
     
     @property
     def dec(self):
