@@ -13,10 +13,45 @@
         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Sort
         </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
+        <div class="dropdown-menu px-3" aria-labelledby="dropdownMenuButton">
+          <div class="container">
+            <div class="row align-items-start" style="width: 350px;">
+              <div class="col">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sort" value="star__superwasp_id" id="sort_swasp_id" {% if sort == 'star__superwasp_id' %}checked{% endif %}>
+              <label class="form-check-label" for="sort_swasp_id">
+                SuperWASP ID
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sort" value="period_length" id="sort_period" {% if sort == 'period_length' %}checked{% endif %}>
+              <label class="form-check-label" for="sort_period">
+                Period
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sort" value="classification" id="sort_classification" {% if sort == 'classification' %}checked{% endif %}>
+              <label class="form-check-label" for="sort_classification">
+                Classification
+              </label>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="order" value="asc" id="order_asc" {% if order == 'asc' %}checked{% endif %}>
+              <label class="form-check-label" for="order_asc">
+                Ascending
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="order" value="desc" id="order_desc" {% if order == 'desc' %}checked{% endif %}>
+              <label class="form-check-label" for="order_desc">
+                Descending
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
         </div>
       </div>
       <div class="btn-group">

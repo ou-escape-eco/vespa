@@ -59,6 +59,25 @@ class StarListView(ListView):
             
             qs = qs.filter(search_filter)
 
+        sort_fields = (
+            'star__superwasp_id',
+            'period_length',
+            'classification'
+        )
+
+        self.sort = self.request.GET.get('sort', None)
+        if self.sort not in sort_fields:
+            self.sort = 'star__superwasp_id'
+
+        self.order = self.request.GET.get('order', None)
+        if self.order == 'desc':
+            order_prefix = '-'
+        else:
+            order_prefix = ''
+            self.order = 'asc' # To ditch any invalid values
+        
+        qs = qs.order_by('{}{}'.format(order_prefix, self.sort))
+
         return qs
 
     def get_context_data(self, **kwargs):
@@ -71,6 +90,8 @@ class StarListView(ListView):
         context['type_rotator'] = self.type_rotator
         context['type_unknown'] = self.type_unknown
         context['search'] = self.search
+        context['sort'] = self.sort
+        context['order'] = self.order
         return context
 
 
