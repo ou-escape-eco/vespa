@@ -10,10 +10,10 @@
 
     <div class="btn-group">
       <div class="btn-group">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="sortButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Sort
         </button>
-        <div class="dropdown-menu px-3" aria-labelledby="dropdownMenuButton">
+        <div class="dropdown-menu px-3" aria-labelledby="sortButton">
           <div class="container">
             <div class="row align-items-start" style="width: 350px;">
               <div class="col">
@@ -55,77 +55,77 @@
         </div>
       </div>
       <div class="btn-group">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="magnitudeButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Magnitude
         </button>
-        <div class="dropdown-menu px-3" aria-labelledby="dropdownMenuButton">
+        <div class="dropdown-menu px-3" aria-labelledby="magnitudeButton">
           <div class="input-group mb-3">
             <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon1">Min</span>
+              <span class="input-group-text" id="mag-min-label">Min</span>
             </div>
-            <input type="text" name="min_mag" class="form-control" placeholder="" aria-label="Minimum" aria-describedby="basic-addon1">
+            <input type="text" name="min_mag" class="form-control" placeholder="" aria-label="Minimum magnitude" aria-describedby="mag-min-label" disabled>
           </div>    
           
           <div class="input-group mb-3">
             <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon1">Max</span>
+              <span class="input-group-text" id="mag-max-label">Max</span>
             </div>
-            <input type="text" name="max_mag" class="form-control" placeholder="" aria-label="Maximum" aria-describedby="basic-addon1">
+            <input type="text" name="max_mag" class="form-control" placeholder="" aria-label="Maximum magnitude" aria-describedby="mag-max-label" disabled>
           </div> 
         </div>
         </div>
         <div class="btn-group">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="periodButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Period
         </button>
-        <div class="dropdown-menu px-3" aria-labelledby="dropdownMenuButton">
+        <div class="dropdown-menu px-3" aria-labelledby="periodButton">
           <div class="input-group mb-3">
             <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon1">Min</span>
+              <span class="input-group-text" id="period-min-label">Min</span>
             </div>
-            <input type="text" name="min_period" class="form-control" placeholder="" value="{% if min_period %}{{ min_period }}{% endif %}" aria-label="Minimum" aria-describedby="basic-addon1">
+            <input type="text" name="min_period" class="form-control" placeholder="" value="{% if min_period %}{{ min_period }}{% endif %}" aria-label="Minimum period" aria-describedby="period-min-label">
           </div>    
           
           <div class="input-group mb-3">
             <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon1">Max</span>
+              <span class="input-group-text" id="period-max-label">Max</span>
             </div>
-            <input type="text" name="max_period" class="form-control" placeholder="" value="{% if max_period %}{{ max_period }}{% endif %}" aria-label="Maximum" aria-describedby="basic-addon1">
+            <input type="text" name="max_period" class="form-control" placeholder="" value="{% if max_period %}{{ max_period }}{% endif %}" aria-label="Maximum period" aria-describedby="period-max-label">
           </div> 
         </div>
         </div>
         <div class="btn-group">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="typeButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Variable type
         </button>
-        <div class="dropdown-menu px-3" aria-labelledby="dropdownMenuButton">
+        <div class="dropdown-menu px-3" aria-labelledby="typeButton">
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="type_pulsator" id="defaultCheck1" {% if type_pulsator %}checked {% endif %}>
-            <label class="form-check-label" for="defaultCheck1">
+            <input class="form-check-input" type="checkbox" name="type_pulsator" id="type_pulsator" {% if type_pulsator %}checked {% endif %}>
+            <label class="form-check-label" for="type_pulsator">
               Pulsator
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="type_rotator" id="defaultCheck1" {% if type_rotator %}checked {% endif %}>
-            <label class="form-check-label" for="defaultCheck1">
+            <input class="form-check-input" type="checkbox" name="type_rotator" id="type_rotator" {% if type_rotator %}checked {% endif %}>
+            <label class="form-check-label" for="type_rotator">
               Rotator
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="type_eaeb" id="defaultCheck1" {% if type_eaeb %}checked {% endif %}>
-            <label class="form-check-label" for="defaultCheck1">
+            <input class="form-check-input" type="checkbox" name="type_eaeb" id="type_eaeb" {% if type_eaeb %}checked {% endif %}>
+            <label class="form-check-label" for="type_eaeb">
               EA/EB
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="type_ew"  id="defaultCheck1" {% if type_ew %}checked {% endif %}>
-            <label class="form-check-label" for="defaultCheck1">
+            <input class="form-check-input" type="checkbox" name="type_ew"  id="type_ew" {% if type_ew %}checked {% endif %}>
+            <label class="form-check-label" for="type_ew">
               EW
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="type_unknown" id="defaultCheck1" {% if type_unknown %}checked {% endif %}>
-            <label class="form-check-label" for="defaultCheck1">
+            <input class="form-check-input" type="checkbox" name="type_unknown" id="type_unknown" {% if type_unknown %}checked {% endif %}>
+            <label class="form-check-label" for="type_unknown">
               Unknown
             </label>
           </div>
