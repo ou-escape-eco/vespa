@@ -21,10 +21,12 @@
               </button>
             <div class="collapse navbar-collapse" id="main-navbar">
             {% block nav %}
+                {% url 'browse' as browse_url %}
+                {% url 'download' as download_url %}
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-                    <li class="nav-item active"><a class="nav-link" href="{% url 'browse' %}">Browse</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'download' %}">Download</a></li>
+                    <li class="nav-item {% if request.path == browse_url %}active{% endif %}"><a class="nav-link" href="{{ browse_url }}">Browse</a></li>
+                    <li class="nav-item {% if request.path == download_url %}active{% endif %}"><a class="nav-link" href="{{ download_url }}">Download</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Links</a>
                         <div class="dropdown-menu" aria-labelledby="dropdown01">
