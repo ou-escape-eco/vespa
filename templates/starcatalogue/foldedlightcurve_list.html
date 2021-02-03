@@ -8,7 +8,7 @@
   <div class="col">
 
 
-    <div class="btn-group">
+    <div class="btn-group filterBar">
       <div class="btn-group">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="sortButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Sort
@@ -207,5 +207,9 @@ $('#lightcurveModal').on('show.bs.modal', function (event) {
     modal.find('.modal-title').text('Lightcurve for ' + superwasp_id)
     modal.find('.modal-body img').attr('src', url)
   })
+
+$(document).on('click', '.filterBar .dropdown-menu', function (e) {
+  e.stopPropagation();
+});
 </script>
 {% endblock %}
