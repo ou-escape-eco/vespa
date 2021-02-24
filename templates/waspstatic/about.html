@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block pagetitle %}About SuperWASP{% endblock %}
+{% block title %}About SuperWASP{% endblock %}
+
+{% block content %}
+<p><a href="#gallery-north">SuperWASP North Gallery</a>&nbsp;&middot;&nbsp;<a href="#gallery-south">SuperWASP South Gallery</a></p>
+
+<h2>How SuperWASP Works</h2>
+
+<p>There are an estimated 10 billion planetary systems in our galaxy
+alone, yet to-date, only a few hundred have been discovered.
+Exoplanets are very difficult to detect because they don't emit any
+light of their own and are completely obscured by their extremely
+bright parent stars. Normal telescope observation techniques cannot be
+used. Instead of trying to image/detect exoplanets directly we look for
+the physical effects they have on their parent star such as shifts in
+position or changes in brightness.</p>
+
+<p><a href="{% static 'images/transit.gif' %}"><img src="{% static 'images/transit2.gif' %}" ></a></p>
+	  
+<p>SuperWASP detects planets by looking for 'transits'. These occur when a planet
+passes in front of its parent star, temporarily obscuring some of its
+light. This can be detected from the Earth as a slight dimming of the
+star's luminosity. The dimming can be as little as 1% so extremely
+accurate measurements are needed. <a href="{% static 'images/transit.gif' %}">
+The image to the left </a> is
+a transit diagram demonstrating the process. As the planet passes in
+front of the star it produces a characteristic 'light-curve' whose
+shape is affected by the size and orbital distance (and hence orbital
+period) of the planet. SuperWASP constantly monitors the brightness of
+the stars in its field of view and alerts us of any variations that may
+be due to the presence of a planet.</p>
+
+<p><img src="{% static 'images/venus-transit.jpg' %}"></p>
+	  
+<p>The easiest planets to detect are close orbiting gas giants known as 'Hot
+Jupiters'. These are very large planets (about 10 times the size of the
+Earth) which orbit extremely closely to their parent star (far closer
+than Mercury orbits our Sun). Their size and proximity creates a large
+decrease in brightness which is easy to detect. Their close orbital
+proximity produces very short orbital periods, sometimes as short as a
+few days, which enables the whole transit to be observed from only a
+few observations. The image to the right shows the transit of Venus in
+front of our own sun which occurred in June 2004 (image courtesy of 
+<a href="http://www.astro.keele.ac.uk/%7Eobs/home.html">Keele University Observatory</a>).
+Venus is such a small planet that its transit hardly blocks any light
+and so would be very difficult to detect if it were orbiting around another nearby
+star. </p>
+
+<p><a href="{% static 'images/Picture%20160.jpg' %}"><img src="{% static 'images/Picture%20160.jpg' %}"></a></p>
+	  
+<p>The SuperWASP observatories each consist of an array of
+8 cameras, backed with a high-quality CCD (See <a href="technical.htm">Technical </a>
+section for more details). These cameras are extremely wide field - upto 2000 times
+greater than a conventional astronomical telescope. The cameras
+continuously image the night sky, each camera capturing up to
+100,000 stars per image (this many are needed to stand any chance of
+detecting transiting planets). This amounts to over 50 gigabytes of
+observational data per night, per observatory, which is automatically processed by 
+our custom built computer 'Pipeline'.  </p>
+
+<p> The 'Pipeline' first reduces the images by removing errors such as
+variations in pixel sensitivity, dirt/scratches on the lenses, noise
+etc. This is done by comparing the images to special calibration
+images. The diagram below shows three of these images; </p>
+
+<ol>
+      <li>'Flat-field' - an image (or several images) of a uniform area of the
+sky taken at twilight, used to remove variations in pixel sensitivity
+across the CCD, dust and scratches and variations in illumination
+across the lens known as vignetting.</li>
+      <li>'Bias' - a short exposure image with the lens shutter in place, used to estimate 
+the effect of a voltage difference applied to the CCD to ensure a linear response.</li>
+      <li>'Dark-current' - a longer exposure with the lens shutter in place,
+used to eliminate thermal noise from the CCD (although the CCDs are
+cooled to -50C thermal noise is still present).</li>
+</ol>
+
+<p><a href="{% static 'images/imagereduction.jpg' %}"><img src="{% static 'images/imagereduction_small.jpg' %}" alt="Automatic image reduction"></a></p>
+	  
+<p>The 'pipeline' then examines the images and matches each star with an
+astronomical catalogue of stars to identify them. Finally a complex
+photometric analysis is performed to measure the brightness of every star, 
+the results of which are stored in the project database hosted by the University of Warwick.</p>
+
+<p>When sufficient observations have been made (over several months),
+we perform searches for dips in brightness that might indicate the
+presence of a planet passing in front of a star. Unfortunately there are a large 
+number of phenomenon, other than planets, that can cause changes in stellar brightness. 
+Very careful analysis is needed to verify the presence of a planet which is performed 
+with the help of our collaborators from the Geneva Planet Search group. To confirm the 
+presence of the planet they use sensitive spectrographs to measure the minute shift in 
+position of the star as the planet orbits around.</p>
+
+<p>Once confirmed, astronomers can then use large instruments such as the Hubble and Spitzer 
+space telescopes to study these worlds.</p>
+
+<h2 id="gallery-north">SuperWASP North Gallery</h2>
+
+<div class="album py-5 bg-light">
+  <div class="container">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+      {% for image in gallery_north %}
+      <div class="col">
+        <div class="card shadow-sm mb-4">
+            <a href="{% static image.src %}"><img src="{% static image.src %}" class="card-img-top"></a>
+          {% if image.caption %}
+          <div class="card-body">
+            <p class="card-text">{{ image.caption }}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<h2 id="gallery-south">SuperWASP South Gallery</h2>
+
+<div class="album py-5 bg-light">
+  <div class="container">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+      {% for image in gallery_south %}
+      <div class="col">
+        <div class="card shadow-sm mb-4">
+            <a href="{% static image.src %}"><img src="{% static image.src %}" class="card-img-top"></a>
+          {% if image.caption %}
+          <div class="card-body">
+            <p class="card-text">{{ image.caption }}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+  {% endblock %}

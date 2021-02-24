@@ -15,13 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.views.generic.base import TemplateView
 
 import starcatalogue.views
+import waspstatic.views
 
 urlpatterns = [
-    path('', starcatalogue.views.IndexListView.as_view(), name='index'),
-    path('browse/', starcatalogue.views.StarListView.as_view(), name='browse'),
-    path('download/', starcatalogue.views.DownloadView.as_view(), name='download'),
-    path('about/', starcatalogue.views.AboutView.as_view(), name='about'),
+    path('', TemplateView.as_view(template_name='index.html'), name='index'),
+    path('exoplanets/', TemplateView.as_view(template_name='waspstatic/exoplanets.html'), name='exoplanets'),
+    path('vespa/', starcatalogue.views.IndexListView.as_view(), name='vespa'),
+    path('vespa/browse/', starcatalogue.views.StarListView.as_view(), name='browse'),
+    path('vespa/download/', starcatalogue.views.DownloadView.as_view(), name='download'),
+    path('about/', waspstatic.views.AboutView.as_view(), name='about'),
     path('admin/', admin.site.urls),
 ]

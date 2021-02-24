@@ -96,12 +96,8 @@ class StarListView(ListView):
 
 
 class IndexListView(StarListView):
-    template_name = 'index.html'
+    template_name = 'starcatalogue/index.html'
 
 
 class DownloadView(TemplateView):
     template_name = 'starcatalogue/download.html'
-
-
-class AboutView(TemplateView):
-    template_name = 'starcatalogue/about.html'

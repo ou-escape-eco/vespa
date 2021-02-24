@@ -10,24 +10,20 @@
         <title>{% block pagetitle %}SuperWASP Variable Stars{% endblock %}</title>
     </head>
     <body>
-        <header>
-            <h1>SuperWASP Variable Stars</h1> <!-- TODO: Remove this! -->
-        </header>
-        
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="{% url 'index' %}">SuperWASP Variable Stars</a>
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark static-top">
+            <a class="navbar-brand" href="{% url 'index' %}">SuperWASP</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
             <div class="collapse navbar-collapse" id="main-navbar">
             {% block nav %}
-                {% url 'browse' as browse_url %}
-                {% url 'download' as download_url %}
+                {% url 'vespa' as vespa_url %}
+                {% url 'exoplanets' as exoplanets_url %}
                 {% url 'about' as about_url %}
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item {% if request.path == about_url %}active{% endif %}"><a class="nav-link" href="{{ about_url }}">About</a></li>
-                    <li class="nav-item {% if request.path == browse_url %}active{% endif %}"><a class="nav-link" href="{{ browse_url }}">Browse</a></li>
-                    <li class="nav-item {% if request.path == download_url %}active{% endif %}"><a class="nav-link" href="{{ download_url }}">Download</a></li>
+                    <li class="nav-item {% if request.path == exoplanets_url %}active{% endif %}"><a class="nav-link" href="{{ exoplanets_url }}">Exoplanets</a></li>
+                    <li class="nav-item {% if request.path == vespa_url %}active{% endif %}"><a class="nav-link" href="{{ vespa_url }}">Variable Stars</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Links</a>
                         <div class="dropdown-menu" aria-labelledby="dropdown01">
@@ -53,6 +49,17 @@
 
             {% block content %}
             {% endblock %}
+
+
+            <div class="jumbotron">
+                <h2 class="display-4">Acknowledgements</h2>
+        
+                <p class="lead">The SuperWASP project is currently funded and operated by Warwick University and Keele University, and was originally set up by Queen’s University Belfast, the Universities of Keele, St. Andrews and Leicester, the Open University, the Isaac Newton Group, the Instituto de Astrofisica de Canarias, the South African Astronomical Observatory and by STFC.</p>
+        
+                <p class="lead">The Zooniverse project on SuperWASP Variable Stars is led by Andrew Norton (The Open University) and builds on work he has done with his former postgraduate students Les Thomas, Stan Payne, Marcus Lohr and Paul Greer, and current postgraduate students Heidi Thiemann & Adam McMaster.</p>
+        
+                <p class="lead">The Zooniverse project on SuperWASP Variable Stars was developed with the help of the ASTERICS Horizon2020 project. ASTERICS is supported by the European Commission Framework Programme Horizon 2020 Research and Innovation action under grant agreement n.653477</p>
+            </div>
 
         </main>
 
