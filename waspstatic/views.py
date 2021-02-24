@@ -28,7 +28,7 @@ class AboutView(TemplateView):
                 {'src': 'gallery/images/Picture_188.jpg', 'caption': 'Camera mount'},
 
                 {'src': 'gallery/images/Picture_190.jpg', 'caption': ''},
-                {'src': 'gallery/images/M42closelab.gif', 'caption': 'Orion nebula'},
+                {'src': 'gallery/images/M42CLOSELAB.gif', 'caption': 'Orion nebula'},
                 {'src': 'gallery/images/M31close.gif', 'caption': 'M31'},
                 {'src': 'gallery/images/FIGM101EXP10ZM.gif', 'caption': 'M101'},
 
