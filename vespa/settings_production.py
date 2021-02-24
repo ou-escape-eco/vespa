@@ -20,3 +20,4 @@ DATABASES = {
 }
 
 STATIC_ROOT = '/opt/vespa/static'
+STATIC_URL = '/'
