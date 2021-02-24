@@ -9,6 +9,9 @@ class AboutView(TemplateView):
     def get_context_data(self, **kwargs):
         return {
             'gallery_north': [
+                {'src': 'images/picture 135.jpg', 'caption': 'SuperWASP-N'},
+                {'src': 'images/ingobservatory.jpg', 'caption': 'ING observatory range'},
+
                 {'src': 'gallery/images/picture_057.jpg', 'caption': 'Construction of SuperWASP-N'},
                 {'src': 'gallery/images/picture_059.jpg', 'caption': 'Assembly of housing'},
                 {'src': 'gallery/images/picture_072.jpg'},
@@ -40,6 +43,9 @@ class AboutView(TemplateView):
                 {'src': 'gallery/images/Figcometzm.gif'},
             ],
             'gallery_south': [
+                {'src': 'images/saao.jpg', 'caption': 'SuperWASP-S at SAAO'},
+                {'src': 'images/moonlight.jpg', 'caption': 'SuperWASP-S'},
+
                 {'src': 'gallery2/images/img_0595.jpg'},
                 {'src': 'gallery2/images/img_0603.jpg'},
                 {'src': 'gallery2/images/img_0605.jpg'},

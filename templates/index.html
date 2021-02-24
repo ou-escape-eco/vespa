@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block pagetitle %}SuperWASP{% endblock %}
 {% block title %}Welcome to the WASP website{% endblock %}
 
 {% block content %}
+
+    <p><img src="{% static 'images/8cams_sml.jpg' %}"></p>
 
    <p>SuperWASP is the UK's leading extra-solar planet detection programme. It originally comprised a consortium of 
     eight academic institutions: Cambridge University, the Instituto de Astrofisica de Canarias, the Isaac Newton Group 
