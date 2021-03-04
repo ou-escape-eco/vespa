@@ -1,5 +1,12 @@
 version: '3'
 services:
+  db:
+    image: postgres:13.1
+    environment: 
+      POSTGRES_PASSWORD: "localdev"
+      POSTGRES_USER: "vespa"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
   app:
     build:
       context: .
