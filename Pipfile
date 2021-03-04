@@ -18,6 +18,7 @@ gunicorn = "*"
 psycopg2 = "*"
 astropy = "*"
 humanize = "*"
+celery = "*"
 
 [requires]
 python_version = "3.7"

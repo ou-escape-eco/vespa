@@ -7,6 +7,10 @@ services:
       POSTGRES_USER: "vespa"
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
+  rabbitmq:
+    image: rabbitmq:3
+    environment: 
+      RABBITMQ_DEFAULT_VHOST: "vespa"
   app:
     build:
       context: .
@@ -14,3 +18,9 @@ services:
       - ./:/usr/src/app
     ports:
       - "8080:8080"
+  celery:
+    build:
+      context: .
+    volumes:
+      - ./:/usr/src/app
+    command: bash ./start_worker.sh
