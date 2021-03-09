@@ -45,17 +45,17 @@ podman run -d --restart=always --pod=vespa --name vespa-postgres --label "io.con
 
 podman run -d --restart=always --pod=vespa --name vespa-rabbitmq --label "io.containers.autoupdate=image" -v /opt/vespa/rabbitmq/:/var/lib/rabbitmq/:z --env-file /opt/vespa/rabbitmq.env docker.io/rabbitmq:3
 
-podman run -d --restart=always --pod=vespa --name vespa-rabbitmq --label "io.containers.autoupdate=image" -v /opt/vespa/nginx.conf:/etc/nginx/nginx.conf:ro -v /opt/vespa/static/:/opt/vespa/static:z docker.io/nginx:1
+podman run -d --restart=always --pod=vespa --name vespa-nginx --label "io.containers.autoupdate=image" -v /opt/vespa/nginx.conf:/etc/nginx/nginx.conf:ro -v /opt/vespa/static/:/opt/vespa/static:z docker.io/nginx:1
 
-podman run -d --restart=always --pod=vespa --name=vespa-django --label "io.containers.autoupdate=image"  --env-file /opt/vespa/prod.env -v /opt/vespa/static:/opt/vespa/static:z ghcr.io/ou-escape-eco/vespa
+podman run -d --restart=always --pod=vespa --name=vespa-django --label "io.containers.autoupdate=image"  --env-file /opt/vespa/prod.env -v /opt/vespa/static:/opt/vespa/static:z -v /srv/www/superwasp-live/astropy:/opt/vespa/astropy:z ghcr.io/ou-escape-eco/vespa
 
-podman run -d --restart=always --pod=vespa --name=vespa-celery --label "io.containers.autoupdate=image"  --env-file /opt/vespa/prod.env -v /opt/vespa/static:/opt/vespa/static:z ghcr.io/ou-escape-eco/vespa bash ./start_worker.sh
+podman run -d --restart=always --pod=vespa --name=vespa-celery --label "io.containers.autoupdate=image"  --env-file /opt/vespa/prod.env -v /opt/vespa/static:/opt/vespa/static:z -v /srv/www/superwasp-live/astropy:/opt/vespa/astropy:z ghcr.io/ou-escape-eco/vespa bash ./start_worker.sh
 
 cd /etc/systemd/system
 
-podman generate systemd --new -f vespa
+podman generate systemd --new --name -f vespa
 
 systemctl daemon-reload
-systemctl enable pod-2e9f36b88b26480ea7d704970d85f9794b7defaa9b26c766996de3a4ed5db309.service
-systemctl start pod-2e9f36b88b26480ea7d704970d85f9794b7defaa9b26c766996de3a4ed5db309.service
+systemctl enable pod-vespa.service
+systemctl start pod-vespa.service
 ```
