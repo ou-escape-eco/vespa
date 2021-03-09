@@ -23,6 +23,6 @@ STATIC_ROOT = '/opt/vespa/static'
 STATIC_URL = '/'
 
 CELERY_BROKER_URL = (
-    f'amqp://{os.environ['CELERY_RABBITMQ_USER']}:{os.environ['CELERY_RABBITMQ_PASS']}'
-    f'@{os.environ['CELERY_RABBITMQ_HOST']}/{os.environ['CELERY_RABBITMQ_VHOST']}'
+    f'amqp://{os.environ["CELERY_RABBITMQ_USER"]}:{os.environ["CELERY_RABBITMQ_PASS"]}'
+    f'@{os.environ["CELERY_RABBITMQ_HOST"]}/{os.environ["CELERY_RABBITMQ_VHOST"]}'
 )
