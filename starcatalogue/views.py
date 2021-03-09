@@ -18,16 +18,22 @@ class StarListView(ListView):
         self.min_period = params.get('min_period', None)
         if self.min_period:
             qs = qs.filter(period_length__gte=self.min_period)
+        else:
+            # To ensure it's None rather than ''
+            self.min_period = None
         
         self.max_period = params.get('max_period', None)
         if self.max_period:
             qs = qs.filter(period_length__lte=self.max_period)
+        else:
+            # To ensure it's None rather than ''
+            self.max_period = None
 
-        self.type_pulsator = params.get('type_pulsator', None)
-        self.type_rotator = params.get('type_rotator', None)
-        self.type_ew = params.get('type_ew', None)
-        self.type_eaeb = params.get('type_eaeb', None)
-        self.type_unknown = params.get('type_unknown', None)
+        self.type_pulsator = params.get('type_pulsator', 'off')
+        self.type_rotator = params.get('type_rotator', 'off')
+        self.type_ew = params.get('type_ew', 'off')
+        self.type_eaeb = params.get('type_eaeb', 'off')
+        self.type_unknown = params.get('type_unknown', 'off')
 
         type_map = {
             FoldedLightcurve.PULSATOR: self.type_pulsator,
@@ -96,7 +102,7 @@ class StarListView(ListView):
         context['sort'] = self.sort
         context['order'] = self.order
 
-        DataExport.objects.get_or_create(
+        DataExport.objects.create(
             data_version=settings.DATA_VERSION,
             min_period = self.min_period,
             max_period = self.max_period,
@@ -106,8 +112,6 @@ class StarListView(ListView):
             type_rotator = DataExport.CHECKBOX_CHOICES_DICT[self.type_rotator],
             type_unknown = DataExport.CHECKBOX_CHOICES_DICT[self.type_unknown],
             search = self.search,
-            sort = self.sort,
-            order = DataExport.ORDER_CHOICES_DICT[self.order],
         )
         return context
 

@@ -76,6 +76,10 @@ class ZooniverseSubject(models.Model):
         )
 
 
+def export_upload_to(instance, filename):
+    return f'exports/{instance.id.hex[:3]}/{filename}'
+
+
 class DataExport(models.Model):
     CHECKBOX_CHOICES = [
         (True, 'on'),
@@ -83,13 +87,16 @@ class DataExport(models.Model):
     ]
     CHECKBOX_CHOICES_DICT = dict([ (v, k) for (k, v) in CHECKBOX_CHOICES])
 
-    ORDER_ASC = 0
-    ORDER_DESC = 1
-    ORDER_CHOICES = [
-        (ORDER_ASC, 'asc'),
-        (ORDER_DESC, 'desc')
-    ]
-    ORDER_CHOICES_DICT = dict([ (v, k) for (k, v) in ORDER_CHOICES])
+    STATUS_PENDING = 0
+    STATUS_RUNNING = 1
+    STATUS_COMPLETE = 2
+    STATUS_FAILED = 3
+    STATUS_CHOICES = (
+        (STATUS_PENDING, 'Pending'),
+        (STATUS_RUNNING, 'Running'),
+        (STATUS_COMPLETE, 'Complete'),
+        (STATUS_FAILED, 'Failed'),
+    )
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
@@ -101,10 +108,15 @@ class DataExport(models.Model):
     type_eaeb = models.BooleanField(choices=CHECKBOX_CHOICES, default=True)
     type_unknown = models.BooleanField(choices=CHECKBOX_CHOICES, default=True)
     search = models.TextField(null=True)
-    sort = models.CharField(max_length=18, null=True)
-    order = models.IntegerField(choices=ORDER_CHOICES, null=True)
 
     data_version = models.FloatField()
+
+    celery_task_id = models.UUIDField(null=True)
+    export_status = models.IntegerField(choices=STATUS_CHOICES, default=STATUS_PENDING)
+    export_file = models.FileField(
+        upload_to=export_upload_to,
+        null=True,
+    )
 
     created = models.DateTimeField(auto_now_add=True)
 
@@ -119,13 +131,16 @@ class DataExport(models.Model):
             'type_eaeb': self.get_type_eaeb_display(),
             'type_unknown': self.get_type_unknown_display(),
             'search': self.search,
-            'sort': self.sort,
-            'order': self.get_order_display(),
         }
     
     @property
     def queryset(self):
         return StarListView().get_queryset(params=self.queryset_params)
+
+    @property
+    def export_file_name(self):
+        return f'{self.id.hex}.zip'
+
 
 from .tasks import generate_export
 from .views import StarListView
