@@ -22,4 +22,6 @@ ENV PYTHONUNBUFFERED=1
 
 EXPOSE 8080
 
+USER nobody:nogroup
+
 CMD ["bash", "start_server.sh"]
