@@ -59,7 +59,7 @@ def generate_export(export_id):
                 'search': export.search,
                 'data_version': export.data_version,
             }))
-        export.export_file.save(export.export_file_name, export_file)
+        export.export_file.save(export.EXPORT_FILE_NAME, export_file)
     except:
         export.export_status = export.STATUS_FAILED
         export.save()

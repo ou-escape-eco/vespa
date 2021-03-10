@@ -77,10 +77,12 @@ class ZooniverseSubject(models.Model):
 
 
 def export_upload_to(instance, filename):
-    return f'exports/{instance.id.hex[:3]}/{filename}'
+    return f'exports/{instance.id.hex[:3]}/{instance.id.hex}/{filename}'
 
 
 class DataExport(models.Model):
+    EXPORT_FILE_NAME = 'superwasp-vespa-export.zip'
+
     CHECKBOX_CHOICES = [
         (True, 'on'),
         (False, 'off'),
@@ -136,10 +138,6 @@ class DataExport(models.Model):
     @property
     def queryset(self):
         return StarListView().get_queryset(params=self.queryset_params)
-
-    @property
-    def export_file_name(self):
-        return f'{self.id.hex}.zip'
 
 
 from .tasks import generate_export
