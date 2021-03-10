@@ -67,9 +67,3 @@ def generate_export(export_id):
 
     export.export_status = export.STATUS_COMPLETE
     export.save()
-
-@receiver(post_save, sender=DataExport)
-def queue_export(sender, **kwargs):
-    if kwargs['created']:
-        kwargs['instance'].celery_task_id = generate_export.delay(kwargs['instance'].id).id
-        kwargs['instance'].save()

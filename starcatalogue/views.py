@@ -1,7 +1,13 @@
+from celery.result import AsyncResult
+
 from django.conf import settings
 from django.db.models import Q
+from django.http import HttpResponseRedirect, HttpResponseBadRequest
+from django.urls import reverse
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
+from django.views.generic import DetailView
+from django.views import View
 
 from starcatalogue.models import Star, FoldedLightcurve, DataExport
 
@@ -15,18 +21,24 @@ class StarListView(ListView):
 
         qs = FoldedLightcurve.objects.all()
 
-        self.min_period = params.get('min_period', None)
-        if self.min_period:
-            qs = qs.filter(period_length__gte=self.min_period)
-        else:
-            # To ensure it's None rather than ''
+        try:
+            self.min_period = float(params.get('min_period', None))
+            if self.min_period:
+                qs = qs.filter(period_length__gte=self.min_period)
+            else:
+                # To ensure it's None rather than ''
+                self.min_period = None
+        except (ValueError, TypeError):
             self.min_period = None
         
-        self.max_period = params.get('max_period', None)
-        if self.max_period:
-            qs = qs.filter(period_length__lte=self.max_period)
-        else:
-            # To ensure it's None rather than ''
+        try:
+            self.max_period = float(params.get('max_period', None))
+            if self.max_period:
+                qs = qs.filter(period_length__lte=self.max_period)
+            else:
+                # To ensure it's None rather than ''
+                self.max_period = None
+        except (ValueError, TypeError):
             self.max_period = None
 
         self.type_pulsator = params.get('type_pulsator', 'off')
@@ -102,17 +114,6 @@ class StarListView(ListView):
         context['sort'] = self.sort
         context['order'] = self.order
 
-        DataExport.objects.create(
-            data_version=settings.DATA_VERSION,
-            min_period = self.min_period,
-            max_period = self.max_period,
-            type_pulsator = DataExport.CHECKBOX_CHOICES_DICT[self.type_pulsator],
-            type_eaeb = DataExport.CHECKBOX_CHOICES_DICT[self.type_eaeb],
-            type_ew = DataExport.CHECKBOX_CHOICES_DICT[self.type_ew],
-            type_rotator = DataExport.CHECKBOX_CHOICES_DICT[self.type_rotator],
-            type_unknown = DataExport.CHECKBOX_CHOICES_DICT[self.type_unknown],
-            search = self.search,
-        )
         return context
 
 
@@ -122,3 +123,38 @@ class IndexListView(StarListView):
 
 class DownloadView(TemplateView):
     template_name = 'starcatalogue/download.html'
+
+
+class GenerateExportView(View):
+    def get(self, request):
+        return HttpResponseRedirect(reverse('vespa'))
+
+    def post(self, request):
+        try:
+            export, created = DataExport.objects.get_or_create(
+                data_version=settings.DATA_VERSION,
+                min_period = request.POST.get('min_period', None),
+                max_period = request.POST.get('max_period', None),
+                type_pulsator = DataExport.CHECKBOX_CHOICES_DICT[request.POST.get('type_pulsator', 'on')],
+                type_eaeb = DataExport.CHECKBOX_CHOICES_DICT[request.POST.get('type_eaeb', 'on')],
+                type_ew = DataExport.CHECKBOX_CHOICES_DICT[request.POST.get('type_ew', 'on')],
+                type_rotator = DataExport.CHECKBOX_CHOICES_DICT[request.POST.get('type_rotator', 'on')],
+                type_unknown = DataExport.CHECKBOX_CHOICES_DICT[request.POST.get('type_unknown', 'on')],
+                search = request.POST.get('search', None),
+            )
+            if (
+                export.export_status in (export.STATUS_PENDING, export.STATUS_FAILED) 
+                or (export.export_status == export.STATUS_RUNNING and AsyncResult(export.celery_task_id).ready())
+            ):
+                export.celery_task_id = generate_export.delay(export.id).id
+                export.save()
+            return HttpResponseRedirect(reverse('view_export', kwargs={'pk': export.id.hex}))
+        except (ValueError, TypeError):
+            return HttpResponseBadRequest('Bad Request')
+
+
+class DataExportview(DetailView):
+    model = DataExport
+
+
+from .tasks import generate_export

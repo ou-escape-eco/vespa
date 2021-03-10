@@ -5,6 +5,7 @@ from django.db import models
 from astropy.coordinates import SkyCoord
 from astropy import units
 from humanize.time import naturaldelta
+from humanize import naturalsize
 
 
 class Star(models.Model):
@@ -138,6 +139,10 @@ class DataExport(models.Model):
     @property
     def queryset(self):
         return StarListView().get_queryset(params=self.queryset_params)
+
+    @property
+    def export_file_naturalsize(self):
+        return naturalsize(self.export_file.size)
 
 
 from .tasks import generate_export

@@ -133,6 +133,22 @@
         </div>
         <input type="submit" value="Apply" class="btn btn-secondary">
     </div>
+
+  </div>
+</form>
+
+<form action="{% url 'generate_export' %}" method="POST">
+  {% csrf_token %}
+  {% if min_period %}<input type="hidden" name="min_period" value="{{ min_period }}">{% endif %}
+  {% if max_period %}<input type="hidden" name="max_period" value="{{ max_period }}">{% endif %}
+  {% if type_pulsator %}<input type="hidden" name="type_pulsator" value="{{ type_pulsator }}">{% endif %}
+  {% if type_eaeb %}<input type="hidden" name="type_eaeb" value="{{ type_eaeb }}">{% endif %}
+  {% if type_ew %}<input type="hidden" name="type_ew" value="{{ type_ew }}">{% endif %}
+  {% if type_rotator %}<input type="hidden" name="type_rotator" value="{{ type_rotator }}">{% endif %}
+  {% if type_unknown %}<input type="hidden" name="type_unknown" value="{{ type_unknown }}">{% endif %}
+  {% if search %}<input type="hidden" name="search" value="{{ search }}">{% endif %}
+  <div class="col">
+    <input type="submit" value="Export as CSV" class="btn btn-secondary">
   </div>
 </form>
 
