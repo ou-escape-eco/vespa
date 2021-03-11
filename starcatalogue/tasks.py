@@ -58,6 +58,7 @@ def generate_export(export_id):
                 'type_unknown': export.type_unknown,
                 'search': export.search,
                 'data_version': export.data_version,
+                'object_count': export.queryset.count(),
             }))
         export.export_file.save(export.EXPORT_FILE_NAME, export_file)
     except:

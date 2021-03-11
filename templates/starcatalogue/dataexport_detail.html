@@ -49,7 +49,11 @@
             <tr>
                 <th scope="row">Data Version</th>
                 <td>{{ object.data_version }}</td>
-                </tr>
+            </tr>
+            <tr>
+                <th scope="row">Object Count</th>
+                <td>{{ object.queryset.count }}</td>
+            </tr>
             <tr>
                 <th scope="row">Minimum Period</th>
                 <td>{{ object.min_period }}</td>

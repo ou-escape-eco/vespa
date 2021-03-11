@@ -134,4 +134,4 @@ MEDIA_URL = '/media/'
 
 CELERY_BROKER_URL = 'amqp://guest:guest@rabbitmq/vespa'
 
-DATA_VERSION = 0.1
+DATA_VERSION = 0.2
