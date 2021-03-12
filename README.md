@@ -47,9 +47,9 @@ podman run -d --restart=always --pod=vespa --name vespa-rabbitmq --label "io.con
 
 podman run -d --restart=always --pod=vespa --name vespa-nginx --label "io.containers.autoupdate=image" -v /opt/vespa/nginx.conf:/etc/nginx/nginx.conf:ro -v /opt/vespa/static/:/opt/vespa/static:z docker.io/nginx:1
 
-podman run -d --restart=always --pod=vespa --name=vespa-django --label "io.containers.autoupdate=image"  --env-file /opt/vespa/prod.env -v /opt/vespa/static:/opt/vespa/static:z -v /srv/www/superwasp-live/astropy:/opt/vespa/astropy:z ghcr.io/ou-escape-eco/vespa
+podman run -d --restart=always --pod=vespa --name=vespa-django --label "io.containers.autoupdate=image"  --env-file /opt/vespa/prod.env -v /opt/vespa/static:/opt/vespa/static:z -v /srv/www/superwasp-live/astropy:/opt/vespa/astropy:z -v /srv/www/superwasp-live/media:/opt/vespa/media ghcr.io/ou-escape-eco/vespa
 
-podman run -d --restart=always --pod=vespa --name=vespa-celery --label "io.containers.autoupdate=image"  --env-file /opt/vespa/prod.env -v /opt/vespa/static:/opt/vespa/static:z -v /srv/www/superwasp-live/astropy:/opt/vespa/astropy:z ghcr.io/ou-escape-eco/vespa bash ./start_worker.sh
+podman run -d --restart=always --pod=vespa --name=vespa-celery --label "io.containers.autoupdate=image"  --env-file /opt/vespa/prod.env -v /opt/vespa/static:/opt/vespa/static:z -v /srv/www/superwasp-live/astropy:/opt/vespa/astropy:z -v /srv/www/superwasp-live/media:/opt/vespa/media:z ghcr.io/ou-escape-eco/vespa bash ./start_worker.sh
 
 cd /etc/systemd/system
 
