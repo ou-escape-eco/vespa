@@ -14,10 +14,10 @@ from .models import DataExport
 
 
 EXPORT_DATA_DESCRIPTION = {
-    'SuperWASP ID': '',
+    'SuperWASP ID': 'The unique identifier for the source',
     'Period Length': 'The period length in seconds',
-    'RA': '',
-    'Dec': '',
+    'RA': 'Right ascension in hours',
+    'Dec': 'Declination in degrees',
     'Classification': 'The candidate variable star type',
 }
 
