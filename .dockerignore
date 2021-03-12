@@ -1,3 +1,4 @@
 tmp/
 .env
 postgres_data/
+exports/

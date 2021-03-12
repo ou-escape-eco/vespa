@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Data Export{% endblock %}
+
+{% block pagetitle %}Data Export{% endblock %}
+
+{% block content %}
+<div class="row mt-5">
+    <div class="col text-center">
+        {% if object.export_status == object.STATUS_COMPLETE %}
+            <h2>Export ready to download</h2>
+            <p><i class="bi bi-check-circle" style="font-size: xxx-large;"></i></p>
+            <p class="lead"><i class="bi bi-download mr-2"></i><a href="{{ object.export_file.url }}">Download export ({{ object.export_file_naturalsize }})</a></p>
+        {% elif object.export_status == object.STATUS_FAILED %}
+            <h2>Export failed</h2>
+            <p><i class="bi bi-exclamation-circle" style="font-size: xxx-large;"></i></p>
+            <p class="lead">Something went wrong while generating your export.</p>
+            <form action="{% url 'generate_export' %}" method="POST">
+                {% csrf_token %}
+                {% if object.min_period %}<input type="hidden" name="min_period" value="{{ object.min_period }}">{% endif %}
+                {% if object.max_period %}<input type="hidden" name="max_period" value="{{ object.max_period }}">{% endif %}
+                {% if object.type_pulsator %}<input type="hidden" name="type_pulsator" value="{{ object.get_type_pulsator_display }}">{% endif %}
+                {% if object.type_eaeb %}<input type="hidden" name="type_eaeb" value="{{ object.get_type_eaeb_display }}">{% endif %}
+                {% if object.type_ew %}<input type="hidden" name="type_ew" value="{{ object.get_type_ew_display }}">{% endif %}
+                {% if object.type_rotator %}<input type="hidden" name="type_rotator" value="{{ object.get_type_rotator_display }}">{% endif %}
+                {% if object.type_unknown %}<input type="hidden" name="type_unknown" value="{{ object.get_type_unknown_display }}">{% endif %}
+                {% if object.search %}<input type="hidden" name="search" value="{{ object.search }}">{% endif %}
+                <div class="col">
+                  <input type="submit" value="Retry" class="btn btn-secondary">
+                </div>
+              </form>
+        {% elif object.export_status == object.STATUS_RUNNING %}
+            <h2>Generating export</h2>
+            <div class="spinner-border my-5" role="status" >
+            <span class="sr-only">Generating...</span>
+            </div>
+            <p class="lead">This page will update automatically when the export is ready. You can also bookmark the page and come back later rather than keeping it open.</p>
+        {% elif object.export_status == object.STATUS_PENDING %}
+            <h2>Export queued</h2>
+            <p><i class="bi bi-pause-circle" style="font-size: xxx-large;"></i></p>
+            <p class="lead">Your export is in the queue. We'll start generating it soon.</p>
+        {% endif %}
+    </div>
+
+    <div class="col">
+        <h2>Export Parameters</h2>
+        <table class="table">
+            <tbody>
+            <tr>
+                <th scope="row">Data Version</th>
+                <td>{{ object.data_version }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Object Count</th>
+                <td>{{ object.queryset.count }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Minimum Period</th>
+                <td>{{ object.min_period }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Maximum Period</th>
+                <td>{{ object.max_period }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Include Pulsators</th>
+                <td>{{ object.type_pulsator }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Include Rotators</th>
+                <td>{{ object.type_rotator }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Include EWs</th>
+                <td>{{ object.type_ew }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Include EA/EBs</th>
+                <td>{{ object.type_eaeb }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Include Unknown</th>
+                <td>{{ object.type_unknown }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Search Query</th>
+                <td>{{ object.search }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block bodyEnd %}
+    {% if object.export_status == object.STATUS_RUNNING or object.export_status == object.STATUS_PENDING %}
+        <script type="text/javascript">
+            setTimeout(function(){
+            location.reload();
+        },3000);
+        </script>
+    {% endif %}
+{% endblock %}
