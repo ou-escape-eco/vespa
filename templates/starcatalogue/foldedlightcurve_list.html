@@ -3,7 +3,7 @@
 {% block title %}Browse the Catalogue{% endblock %}
 
 {% block content %}
-<form action="{% url 'browse' %}" method="GET">
+<form action="{% url 'browse' %}" method="GET" id="filter_form">
 <div class="row mt-5">
   <div class="col">
 
@@ -137,16 +137,16 @@
   </div>
 </form>
 
-<form action="{% url 'generate_export' %}" method="POST">
+<form action="{% url 'generate_export' %}" method="POST" id="export_form">
   {% csrf_token %}
-  {% if min_period %}<input type="hidden" name="min_period" value="{{ min_period }}">{% endif %}
-  {% if max_period %}<input type="hidden" name="max_period" value="{{ max_period }}">{% endif %}
-  {% if type_pulsator %}<input type="hidden" name="type_pulsator" value="{{ type_pulsator }}">{% endif %}
-  {% if type_eaeb %}<input type="hidden" name="type_eaeb" value="{{ type_eaeb }}">{% endif %}
-  {% if type_ew %}<input type="hidden" name="type_ew" value="{{ type_ew }}">{% endif %}
-  {% if type_rotator %}<input type="hidden" name="type_rotator" value="{{ type_rotator }}">{% endif %}
-  {% if type_unknown %}<input type="hidden" name="type_unknown" value="{{ type_unknown }}">{% endif %}
-  {% if search %}<input type="hidden" name="search" value="{{ search }}">{% endif %}
+  <input type="hidden" name="min_period" value="{% if min_period %}{{ min_period }}{% endif %}">
+  <input type="hidden" name="max_period" value="{% if max_period %}{{ max_period }}{% endif %}">
+  <input type="hidden" name="type_pulsator" value="{% if type_pulsator %}{{ type_pulsator }}{% endif %}">
+  <input type="hidden" name="type_eaeb" value="{% if type_eaeb %}{{ type_eaeb }}{% endif %}">
+  <input type="hidden" name="type_ew" value="{% if type_ew %}{{ type_ew }}{% endif %}">
+  <input type="hidden" name="type_rotator" value="{% if type_rotator %}{{ type_rotator }}{% endif %}">
+  <input type="hidden" name="type_unknown" value="{% if type_unknown %}{{ type_unknown }}{% endif %}">
+  <input type="hidden" name="search" value="{% if search %}{{ search }}{% endif %}">
   <div class="col">
     <input type="submit" value="Export as CSV" class="btn btn-secondary">
   </div>
@@ -204,19 +204,39 @@
 
 {% block bodyEnd %}
 <script type="text/javascript">
+// Display the lightcurve modal
 $('#lightcurveModal').on('show.bs.modal', function (event) {
-    var button = $(event.relatedTarget) // Button that triggered the modal
-    var url = button.data('url') // Extract info from data-* attributes
-    var superwasp_id = button.data('superwasp-id')
-    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-    var modal = $(this)
-    modal.find('.modal-title').text('Lightcurve for ' + superwasp_id)
-    modal.find('.modal-body img').attr('src', url)
-  })
+  var button = $(event.relatedTarget) // Button that triggered the modal
+  var url = button.data('url') // Extract info from data-* attributes
+  var superwasp_id = button.data('superwasp-id')
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  var modal = $(this)
+  modal.find('.modal-title').text('Lightcurve for ' + superwasp_id)
+  modal.find('.modal-body img').attr('src', url)
+})
 
+// Stop the dropdowns closing when you click inside them
 $(document).on('click', '.filterBar .dropdown-menu', function (e) {
   e.stopPropagation();
+});
+
+// Keep the export form in sync with the filtering form
+// So the user doesn't need to hit "apply" before exporting
+$('#export_form input').each(function (){
+  if (this.type == 'hidden') {
+    $(`#filter_form input[name='${this.name}']`).on('input', function() {
+      if(this.type == 'text') {
+        $(`#export_form input[name='${this.name}']`).val($(this).val());
+      } else if (this.type == 'checkbox') {
+        if ($(this).checked) {
+          $(`#export_form input[name='${this.name}']`).val('on');
+        } else {
+          $(`#export_form input[name='${this.name}']`).val('off');
+        }
+      }
+    })
+  }
 });
 </script>
 {% endblock %}

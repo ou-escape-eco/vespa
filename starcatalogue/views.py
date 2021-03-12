@@ -131,10 +131,18 @@ class GenerateExportView(View):
 
     def post(self, request):
         try:
+            min_period = request.POST.get('min_period', None)
+            if not min_period:
+                min_period = None
+
+            max_period = request.POST.get('max_period', None)
+            if not max_period:
+                max_period = None
+
             export, created = DataExport.objects.get_or_create(
                 data_version=settings.DATA_VERSION,
-                min_period = request.POST.get('min_period', None),
-                max_period = request.POST.get('max_period', None),
+                min_period = min_period,
+                max_period = max_period,
                 type_pulsator = DataExport.CHECKBOX_CHOICES_DICT[request.POST.get('type_pulsator', 'on')],
                 type_eaeb = DataExport.CHECKBOX_CHOICES_DICT[request.POST.get('type_eaeb', 'on')],
                 type_ew = DataExport.CHECKBOX_CHOICES_DICT[request.POST.get('type_ew', 'on')],
