@@ -20,6 +20,9 @@ astropy = "*"
 humanize = "*"
 celery = "*"
 pyyaml = "*"
+django-celery-results = "*"
+seaborn = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.7"

@@ -14,9 +14,15 @@
                     <td>{{ object.ra }}</td>
                 </tr>
                 <tr>
-                    <th scope="row">Dec</th>
+                    <th scope="row">Dec {{object.fits_celery_task_id}}</th>
                     <td>{{ object.dec }}</td>
                 </tr>
+                {% if object.fits %}
+                <tr>
+                    <th scope="row">Raw data</th>
+                    <td><a href="{{ object.fits.url }}"><i class="bi bi-download mr-2"></i> Download FITS ({{ object.fits_file_naturalsize }})</a></td>
+                </tr>
+                {% endif %}
             </tbody>
         </table>
     </div>

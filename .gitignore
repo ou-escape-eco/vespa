@@ -113,3 +113,5 @@ postgres_data/
 tmp/
 
 exports/
+sources/
+fits/

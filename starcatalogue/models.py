@@ -1,15 +1,35 @@
+import datetime
 import uuid
 
 from django.db import models
+from django.utils import timezone
 
-from astropy.coordinates import SkyCoord
+import astropy.io.fits as fits
 from astropy import units
+from astropy.coordinates import SkyCoord
+
+from astropy.timeseries import TimeSeries
+
+from celery.result import AsyncResult
 from humanize.time import naturaldelta
 from humanize import naturalsize
 
 
+def export_upload_to(instance, filename):
+    return f'exports/{instance.id.hex[:3]}/{instance.id.hex}/{filename}'
+
+def fits_upload_to(instance, filename):
+    return f'sources/{instance.superwasp_id}/{filename}'
+
+def lightcurve_upload_to(instance, filename):
+    return f'sources/{instance.star.superwasp_id}/{filename}'
+
+
 class Star(models.Model):
     superwasp_id = models.CharField(unique=True, max_length=26)
+    fits_file = models.FileField(null=True, upload_to=fits_upload_to)
+    fits_celery_task_id = models.UUIDField(null=True)
+    fits_celery_started = models.DateTimeField(null=True)
 
     @property
     def coords(self):
@@ -27,6 +47,43 @@ class Star(models.Model):
     def lightcurves(self):
         return self.foldedlightcurve_set.all().order_by('period_length')
 
+    @property
+    def fits(self):
+        if (
+            not self.fits_file
+            and (
+                not self.fits_celery_task_id
+                or AsyncResult(self.fits_celery_task_id).ready()
+                or not self.fits_celery_started
+                or self.fits_celery_started < (timezone.now() - datetime.timedelta(minutes=5))
+            )
+        ):
+            self.fits_celery_task_id = download_fits.apply_async(
+                (self.id,),
+                expires=300,
+            ).id
+            self.fits_celery_started = timezone.now()
+            self.save()
+            return None
+
+        if self.fits_celery_task_id:
+            AsyncResult(self.fits_celery_task_id).forget()
+
+        return self.fits_file
+
+    @property
+    def fits_file_naturalsize(self):
+        return naturalsize(self.fits_file.size)
+
+    @property
+    def timeseries(self):
+        if not self.fits:
+            return
+
+        with fits.open(self.fits.path) as fits_file:
+            hjd_col = fits.Column(name='HJD', format='D', array=fits_file[1].data['TMID']/86400 + 2453005.5)
+            lc_data = fits.BinTableHDU.from_columns(fits_file[1].data.columns + fits.ColDefs([hjd_col]))
+            return TimeSeries.read(lc_data, time_column='HJD', time_format='jd')
 
 class FoldedLightcurve(models.Model):
     PULSATOR = 1
@@ -51,6 +108,8 @@ class FoldedLightcurve(models.Model):
         (UNCERTAIN, 'Uncertain'),
     ]
 
+    CURRENT_IMAGE_VERSION = 0.3
+
     star = models.ForeignKey(to=Star, on_delete=models.CASCADE)
 
     period_number = models.IntegerField()
@@ -61,17 +120,57 @@ class FoldedLightcurve(models.Model):
     period_uncertainty = models.IntegerField(choices=PERIOD_UNCERTAINTY_CHOICES, null=True)
     classification_count = models.IntegerField(null=True)
 
+    image_file = models.ImageField(null=True, upload_to=lightcurve_upload_to)
+    thumbnail_file = models.ImageField(null=True, upload_to=lightcurve_upload_to)
+    images_celery_task_id = models.UUIDField(null=True)
+    image_version = models.FloatField(null=True)
+
     @property
     def natural_period(self):
         return naturaldelta(self.period_length)
 
     @property
     def image_location(self):
-        return self.zooniversesubject.image_location
+        if not self.image_file or not self.image_version or (
+            self.image_version 
+            and self.image_version < self.CURRENT_IMAGE_VERSION
+        ):
+            if (
+                not self.images_celery_task_id
+                or AsyncResult(self.images_celery_task_id).ready()
+            ):
+                self.images_celery_task_id = generate_images.delay(self.id).id
+                self.save()
+            return self.zooniversesubject.image_location
+        if self.images_celery_task_id:
+            AsyncResult(self.images_celery_task_id).forget()
+        return self.image_file.url
 
     @property
     def thumbnail_location(self):
-        return self.zooniversesubject.thumbnail_location
+        if not self.thumbnail_file or not self.image_version or (
+            self.image_version 
+            and self.image_version < self.CURRENT_IMAGE_VERSION
+        ):
+            if (
+                not self.images_celery_task_id
+                or AsyncResult(self.images_celery_task_id).ready()
+            ):
+                self.images_celery_task_id = generate_images.delay(self.id).id
+                self.save()
+            return self.zooniversesubject.thumbnail_location
+        if self.images_celery_task_id:
+            AsyncResult(self.images_celery_task_id).forget()
+        return self.thumbnail_file.url
+
+
+    @property
+    def timeseries(self):
+        if not self.star.timeseries:
+            return
+        return self.star.timeseries.fold(
+            period=self.period_length * units.second,
+        )
 
 
 class ZooniverseSubject(models.Model):
@@ -87,10 +186,6 @@ class ZooniverseSubject(models.Model):
         return 'https://thumbnails.zooniverse.org/100x80/{}'.format(
             self.image_location.replace('https://', ''),
         )
-
-
-def export_upload_to(instance, filename):
-    return f'exports/{instance.id.hex[:3]}/{instance.id.hex}/{filename}'
 
 
 class DataExport(models.Model):
@@ -157,5 +252,5 @@ class DataExport(models.Model):
         return naturalsize(self.export_file.size)
 
 
-from .tasks import generate_export
+from .tasks import download_fits, generate_images
 from .views import StarListView

@@ -17,6 +17,9 @@ from django.contrib import admin
 from django.urls import path
 from django.views.generic.base import TemplateView
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 import starcatalogue.views
 import waspstatic.views
 
@@ -31,4 +34,4 @@ urlpatterns = [
     path('vespa/source/<str:swasp_id>/', starcatalogue.views.SourceView.as_view(), name='view_source'),
     path('about/', waspstatic.views.AboutView.as_view(), name='about'),
     path('admin/', admin.site.urls),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

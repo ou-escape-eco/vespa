@@ -2,3 +2,5 @@ tmp/
 .env
 postgres_data/
 exports/
+sources/
+fits/
