@@ -228,6 +228,8 @@ class DataExport(models.Model):
         null=True,
     )
 
+    progress = models.FloatField(default=0.0)
+
     created = models.DateTimeField(auto_now_add=True)
 
     @property

@@ -32,7 +32,10 @@
         {% elif object.export_status == object.STATUS_RUNNING %}
             <h2>Generating export</h2>
             <div class="spinner-border my-5" role="status" >
-            <span class="sr-only">Generating...</span>
+                <span class="sr-only">Generating...</span>
+            </div>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: {{ object.progress|floatformat:0 }}%;" aria-valuenow="{{ object.progress|floatformat:0 }}" aria-valuemin="0" aria-valuemax="100">{{ object.progress|floatformat:0 }}%</div>
             </div>
             <p class="lead">This page will update automatically when the export is ready. You can also bookmark the page and come back later rather than keeping it open.</p>
         {% elif object.export_status == object.STATUS_PENDING %}

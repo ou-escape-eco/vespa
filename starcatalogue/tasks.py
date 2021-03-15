@@ -44,7 +44,11 @@ def generate_export(export_id):
         export_csv = io.StringIO()
         w = csv.DictWriter(export_csv, fieldnames=EXPORT_DATA_DESCRIPTION.keys())
         w.writeheader()
-        for record in export.queryset:
+        total_records = export.queryset.count()
+        for i, record in enumerate(export.queryset):
+            if i % 1000 == 0:
+                export.progress = float(i) / total_records * 100
+                export.save()
             w.writerow({
                 'SuperWASP ID': record.star.superwasp_id,
                 'Period Length': record.period_length,
@@ -67,7 +71,7 @@ def generate_export(export_id):
                 'type_unknown': export.type_unknown,
                 'search': export.search,
                 'data_version': export.data_version,
-                'object_count': export.queryset.count(),
+                'object_count': total_records,
             }))
         export.export_file.save(export.EXPORT_FILE_NAME, export_file)
     except:
