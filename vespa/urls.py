@@ -27,7 +27,8 @@ urlpatterns = [
     path('vespa/browse/', starcatalogue.views.StarListView.as_view(), name='browse'),
     path('vespa/download/', starcatalogue.views.DownloadView.as_view(), name='download'),
     path('vespa/export/', starcatalogue.views.GenerateExportView.as_view(), name='generate_export'),
-    path('vespa/export/<str:pk>/', starcatalogue.views.DataExportview.as_view(), name='view_export'),
+    path('vespa/export/<str:pk>/', starcatalogue.views.DataExportView.as_view(), name='view_export'),
+    path('vespa/source/<str:swasp_id>/', starcatalogue.views.SourceView.as_view(), name='view_source'),
     path('about/', waspstatic.views.AboutView.as_view(), name='about'),
     path('admin/', admin.site.urls),
 ]

@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ object.superwasp_id }}{% endblock %}
+
+{% block pagetitle %}{{ object.superwasp_id }}{% endblock %}
+
+{% block content %}
+<div class="row mt-5">
+    <div class="col">
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th scope="row">RA</th>
+                    <td>{{ object.ra }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Dec</th>
+                    <td>{{ object.dec }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="album py-5 bg-light">
+    <div class="container">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        {% for lightcurve in object.lightcurves %}
+        <div class="col">
+          <div class="card shadow-sm mb-4">
+              <a href="#lightcurve-{{ lightcurve.id }}"><img src="{{ lightcurve.image_location }}" class="card-img-top"></a>
+            <div class="card-body">
+              <p class="card-text">{{ lightcurve.get_classification_display }}, {{ lightcurve.natural_period }}</p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+
+{% for lightcurve in object.lightcurves %}
+    <h2 class="mt-5" id="lightcurve-{{ lightcurve.pk }}"><a href="#lightcurve-{{ lightcurve.pk }}"><i class="bi bi-link"></i></a> {{ lightcurve.natural_period }}</h2>
+
+    <div class="row">
+        <div class="col">
+            <img src="{{ lightcurve.image_location }}" alt="" style="width: 100%; max-height: auto;">
+        </div>
+        <div class="col">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th scope="row">Period (sec)</th>
+                        <td>{{ lightcurve.period_length }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Classification</th>
+                        <td>{{ lightcurve.get_classification_display }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Links</th>
+                        <td>
+                            <a href="https://www.zooniverse.org/projects/ajnorton/superwasp-variable-stars/talk/subjects/{{ lightcurve.zooniversesubject.zooniverse_id }}">Zooniverse Talk</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endfor %}
+
+{% endblock %}

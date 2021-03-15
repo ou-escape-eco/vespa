@@ -185,13 +185,13 @@
         <tbody>
           {% for lightcurve in object_list %}
             <tr>
-                <td><a href="{% url 'browse' %}?search={{ lightcurve.star.superwasp_id|urlencode }}">{{ lightcurve.star.superwasp_id }}</a></td>
+                <td><a href="{% url 'view_source' lightcurve.star.superwasp_id %}">{{ lightcurve.star.superwasp_id }}</a></td>
                 <td>{{ lightcurve.period_length }} (~{{ lightcurve.natural_period }})</td>
                 <td>{{ lightcurve.star.ra }}</td>
                 <td>{{ lightcurve.star.dec }}</td>
                 <td>{{ lightcurve.get_classification_display }}</td>
                 <td><a href="https://www.zooniverse.org/projects/ajnorton/superwasp-variable-stars/talk/subjects/{{ lightcurve.zooniversesubject.zooniverse_id }}">View on Talk</a></td>
-                <td>{% if lightcurve.zooniversesubject.image_location %}<a href="#" data-toggle="modal" data-target="#lightcurveModal" data-url="{{ lightcurve.zooniversesubject.image_location }}" data-superwasp-id="{{ star.superwasp_id }}"><img src="{{ lightcurve.zooniversesubject.thumbnail_location }}" alt="" style="width: 100px; height: auto;"></a>{% endif %}</td>
+                <td><a href="{% url 'view_source' lightcurve.star.superwasp_id %}#lightcurve-{{ lightcurve.pk }}"><img src="{{ lightcurve.thumbnail_location }}" alt="" style="width: 100px; height: auto;"></a></td>
             </tr>
         {% endfor %}
         </tbody>

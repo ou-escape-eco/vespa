@@ -3,6 +3,7 @@ from celery.result import AsyncResult
 from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponseBadRequest
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
@@ -161,8 +162,15 @@ class GenerateExportView(View):
             return HttpResponseBadRequest('Bad Request')
 
 
-class DataExportview(DetailView):
+class DataExportView(DetailView):
     model = DataExport
+
+
+class SourceView(DetailView):
+    model = Star
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(self.model, superwasp_id=self.kwargs['swasp_id'])
 
 
 from .tasks import generate_export

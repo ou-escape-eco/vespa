@@ -23,6 +23,10 @@ class Star(models.Model):
     def dec(self):
         return self.coords.dec
 
+    @property
+    def lightcurves(self):
+        return self.foldedlightcurve_set.all().order_by('period_length')
+
 
 class FoldedLightcurve(models.Model):
     PULSATOR = 1
@@ -60,6 +64,14 @@ class FoldedLightcurve(models.Model):
     @property
     def natural_period(self):
         return naturaldelta(self.period_length)
+
+    @property
+    def image_location(self):
+        return self.zooniversesubject.image_location
+
+    @property
+    def thumbnail_location(self):
+        return self.zooniversesubject.thumbnail_location
 
 
 class ZooniverseSubject(models.Model):
