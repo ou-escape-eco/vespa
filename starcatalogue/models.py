@@ -18,7 +18,7 @@ from humanize import naturalsize
 def export_upload_to(instance, filename):
     return f'exports/{instance.id.hex[:3]}/{instance.id.hex}/{filename}'
 
-def fits_upload_to(instance, filename):
+def star_upload_to(instance, filename):
     return f'sources/{instance.superwasp_id}/{filename}'
 
 def lightcurve_upload_to(instance, filename):
@@ -26,10 +26,16 @@ def lightcurve_upload_to(instance, filename):
 
 
 class Star(models.Model):
+    CURRENT_IMAGE_VERSION = 0.1
+
     superwasp_id = models.CharField(unique=True, max_length=26)
-    fits_file = models.FileField(null=True, upload_to=fits_upload_to)
+    fits_file = models.FileField(null=True, upload_to=star_upload_to)
     fits_celery_task_id = models.UUIDField(null=True)
     fits_celery_started = models.DateTimeField(null=True)
+
+    image_file = models.ImageField(null=True, upload_to=star_upload_to)
+    images_celery_task_id = models.UUIDField(null=True)
+    image_version = models.FloatField(null=True)
 
     @property
     def coords(self):
@@ -85,6 +91,26 @@ class Star(models.Model):
             lc_data = fits.BinTableHDU.from_columns(fits_file[1].data.columns + fits.ColDefs([hjd_col]))
             return TimeSeries.read(lc_data, time_column='HJD', time_format='jd')
 
+    @property
+    def image_location(self):
+        return self.get_image_location()
+    
+    def get_image_location(self):
+        if not self.image_file or not self.image_version or (
+            self.image_version 
+            and self.image_version < self.CURRENT_IMAGE_VERSION
+        ):
+            if (
+                not self.images_celery_task_id
+                or AsyncResult(self.images_celery_task_id).ready()
+            ):
+                self.images_celery_task_id = generate_star_images.delay(self.id).id
+                self.save()
+            return None
+        if self.images_celery_task_id:
+            AsyncResult(self.images_celery_task_id).forget()
+        return self.image_file.url
+
 class FoldedLightcurve(models.Model):
     PULSATOR = 1
     EA_EB = 2
@@ -131,6 +157,9 @@ class FoldedLightcurve(models.Model):
 
     @property
     def image_location(self):
+        return self.get_image_location()
+
+    def get_image_location(self):
         if not self.image_file or not self.image_version or (
             self.image_version 
             and self.image_version < self.CURRENT_IMAGE_VERSION
@@ -139,7 +168,7 @@ class FoldedLightcurve(models.Model):
                 not self.images_celery_task_id
                 or AsyncResult(self.images_celery_task_id).ready()
             ):
-                self.images_celery_task_id = generate_images.delay(self.id).id
+                self.images_celery_task_id = generate_lightcurve_images.delay(self.id).id
                 self.save()
             return self.zooniversesubject.image_location
         if self.images_celery_task_id:
@@ -148,6 +177,9 @@ class FoldedLightcurve(models.Model):
 
     @property
     def thumbnail_location(self):
+        return self.get_thumbnail_location()
+
+    def get_thumbnail_location(self):
         if not self.thumbnail_file or not self.image_version or (
             self.image_version 
             and self.image_version < self.CURRENT_IMAGE_VERSION
@@ -156,7 +188,7 @@ class FoldedLightcurve(models.Model):
                 not self.images_celery_task_id
                 or AsyncResult(self.images_celery_task_id).ready()
             ):
-                self.images_celery_task_id = generate_images.delay(self.id).id
+                self.images_celery_task_id = generate_lightcurve_images.delay(self.id).id
                 self.save()
             return self.zooniversesubject.thumbnail_location
         if self.images_celery_task_id:
@@ -254,5 +286,5 @@ class DataExport(models.Model):
         return naturalsize(self.export_file.size)
 
 
-from .tasks import download_fits, generate_images
+from .tasks import download_fits, generate_lightcurve_images, generate_star_images
 from .views import StarListView

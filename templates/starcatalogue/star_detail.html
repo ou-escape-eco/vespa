@@ -6,6 +6,13 @@
 
 {% block content %}
 <div class="row mt-5">
+{% if object.image_location %}
+
+    <div class="col">
+        <p><img src="{{ object.image_location }}" alt=""></p>
+    </div>
+
+{% endif %}
     <div class="col">
         <table class="table">
             <tbody>

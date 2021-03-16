@@ -95,12 +95,14 @@ def download_fits(star_id):
     star.fits_file.save(f'{star.superwasp_id}.fits', fits_data)
     star.save()
 
+    star.get_image_location()
+
     for lightcurve in star.foldedlightcurve_set.all():
-        lightcurve.image_location
+        lightcurve.get_image_location()
 
 
 @shared_task
-def generate_images(lightcurve_id):
+def generate_lightcurve_images(lightcurve_id):
     lightcurve = FoldedLightcurve.objects.get(id=lightcurve_id)
 
     if not lightcurve.star.fits:
@@ -141,3 +143,33 @@ def generate_images(lightcurve_id):
 
     lightcurve.image_version = lightcurve.CURRENT_IMAGE_VERSION
     lightcurve.save()
+
+@shared_task
+def generate_star_images(star_id):
+    star = Star.objects.get(id=star_id)
+
+    if not star.fits:
+        return
+    
+    ts = star.timeseries
+    if not ts:
+        return
+            
+    ts_data = {
+        'time': ts.time.jd,
+        'flux': ts['TAMFLUX2'],
+    }
+    fig = pyplot.figure()
+    plot = seaborn.scatterplot(
+        data=ts_data,
+        x='time',
+        y='flux',
+        alpha=0.5,
+        s=1,
+    )
+    plot.set_title(star.superwasp_id)
+    image_data = ContentFile(b'')
+    fig.savefig(image_data)
+    star.image_file.save(f'lightcurve.png', image_data)
+    star.image_version = star.CURRENT_IMAGE_VERSION
+    star.save()

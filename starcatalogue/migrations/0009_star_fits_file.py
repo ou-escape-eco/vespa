@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='star',
             name='fits_file',
-            field=models.FileField(null=True, upload_to=starcatalogue.models.fits_upload_to),
+            field=models.FileField(null=True, upload_to=starcatalogue.models.star_upload_to),
         ),
     ]
