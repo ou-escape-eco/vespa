@@ -49,13 +49,13 @@
         {% endfor %}
       </div>
     </div>
-  </div>
+</div>
 
 
 {% for lightcurve in object.lightcurves %}
     <h2 class="mt-5" id="lightcurve-{{ lightcurve.pk }}"><a href="#lightcurve-{{ lightcurve.pk }}"><i class="bi bi-link"></i></a> {{ lightcurve.natural_period }}</h2>
 
-    <div class="row">
+    <div class="row mb-5">
         <div class="col">
             <img src="{{ lightcurve.image_location }}" alt="" style="width: 100%; max-height: auto;">
         </div>
@@ -69,6 +69,22 @@
                     <tr>
                         <th scope="row">Classification</th>
                         <td>{{ lightcurve.get_classification_display }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Classification count</th>
+                        <td>{{ lightcurve.classification_count }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Period Uncertainty</th>
+                        <td>{{ lightcurve.get_period_uncertainty_display }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Sigma</th>
+                        <td>{{ lightcurve.sigma }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Chi Squared</th>
+                        <td>{{ lightcurve.chi_squared }}</td>
                     </tr>
                     <tr>
                         <th scope="row">Links</th>

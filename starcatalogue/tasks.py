@@ -28,6 +28,10 @@ EXPORT_DATA_DESCRIPTION = {
     'RA': 'Right ascension in hours',
     'Dec': 'Declination in degrees',
     'Classification': 'The candidate variable star type',
+    'Classification count': 'How many Zooniverse classifications this entry received',
+    'Period uncertainty': 'Whether the correctness of this period is certain or uncertain (based on Zooniverse classifications)',
+    'Sigma': 'Sigma error estimate from original period search',
+    'Chi squared': 'Chi squared error estimate from original period search',
 }
 
 
@@ -55,6 +59,10 @@ def generate_export(export_id):
                 'RA': record.star.ra,
                 'Dec': record.star.dec,
                 'Classification': record.get_classification_display(), 
+                'Classification count': record.classification_count,
+                'Period uncertainty': record.get_period_uncertainty_display(),
+                'Sigma': record.sigma,
+                'Chi squared': record.chi_squared,
             })
 
         export_file = ContentFile(b'')
