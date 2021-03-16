@@ -1,4 +1,5 @@
 import datetime
+import urllib
 import uuid
 
 from django.db import models
@@ -38,8 +39,16 @@ class Star(models.Model):
     image_version = models.FloatField(null=True)
 
     @property
+    def coords_str(self):
+        return self.superwasp_id.replace('1SWASP', '')
+
+    @property
     def coords(self):
-        return SkyCoord(self.superwasp_id.replace('1SWASP', ''), unit=(units.hour, units.deg))
+        return SkyCoord(self.coords_str, unit=(units.hour, units.deg))
+    
+    @property
+    def coords_quoted(self):
+        return urllib.parse.quote(self.coords_str)
 
     @property
     def ra(self):
@@ -48,6 +57,16 @@ class Star(models.Model):
     @property
     def dec(self):
         return self.coords.dec
+
+    @property
+    def ra_quoted(self):
+        coords = self.coords_str
+        return urllib.parse.quote(f'{coords[1:3]}:{coords[3:5]}:{coords[5:10]}')
+
+    @property
+    def dec_quoted(self):
+        coords = self.coords_str
+        return urllib.parse.quote(f'{coords[10:13]}:{coords[13:15]}:{coords[15:]}')
 
     @property
     def lightcurves(self):
@@ -110,6 +129,19 @@ class Star(models.Model):
         if self.images_celery_task_id:
             AsyncResult(self.images_celery_task_id).forget()
         return self.image_file.url
+
+    @property
+    def cerit_url(self):
+        return f'https://wasp.cerit-sc.cz/search?objid={self.coords_quoted}&radius=1&radiusUnit=deg&limit=10'
+
+    @property
+    def simbad_url(self):
+        return f'http://simbad.u-strasbg.fr/simbad/sim-coo?Coord={self.ra_quoted}+{self.dec_quoted}&Radius=2&Radius.unit=arcmin&submit=submit+query'
+    
+    @property
+    def asassn_url(self):
+        return f'https://asas-sn.osu.edu/photometry?ra={self.ra_quoted}&dec={self.dec_quoted}&radius=2'
+
 
 class FoldedLightcurve(models.Model):
     PULSATOR = 1
@@ -195,7 +227,6 @@ class FoldedLightcurve(models.Model):
             AsyncResult(self.images_celery_task_id).forget()
         return self.thumbnail_file.url
 
-
     @property
     def timeseries(self):
         if not self.star.timeseries:
@@ -244,6 +275,8 @@ class DataExport(models.Model):
 
     min_period = models.FloatField(null=True)
     max_period = models.FloatField(null=True)
+    certain_period = models.BooleanField(choices=CHECKBOX_CHOICES, default=True)
+    uncertain_period = models.BooleanField(choices=CHECKBOX_CHOICES, default=True)
     type_pulsator = models.BooleanField(choices=CHECKBOX_CHOICES, default=True)
     type_rotator = models.BooleanField(choices=CHECKBOX_CHOICES, default=True)
     type_ew = models.BooleanField(choices=CHECKBOX_CHOICES, default=True)
@@ -269,6 +302,8 @@ class DataExport(models.Model):
         return {
             'min_period': self.min_period,
             'max_period': self.max_period,
+            'certain_period': self.get_certain_period_display(),
+            'uncertain_period': self.get_uncertain_period_display(),
             'type_pulsator': self.get_type_pulsator_display(),
             'type_rotator': self.get_type_rotator_display(),
             'type_ew': self.get_type_ew_display(),

@@ -72,6 +72,8 @@ def generate_export(export_id):
             export_zip.writestr('params.yaml', yaml.dump({
                 'min_period': export.min_period,
                 'max_period': export.max_period,
+                'certain_period': export.certain_period,
+                'uncertain_period': export.uncertain_period,
                 'type_pulsator': export.type_pulsator,
                 'type_rotator': export.type_rotator,
                 'type_ew': export.type_ew,

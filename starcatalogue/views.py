@@ -42,6 +42,23 @@ class StarListView(ListView):
         except (ValueError, TypeError):
             self.max_period = None
 
+        self.certain_period = params.get('certain_period', 'off')
+        self.uncertain_period = params.get('uncertain_period', 'off')
+
+        uncertainty_map = {
+            FoldedLightcurve.CERTAIN: self.certain_period,
+            FoldedLightcurve.UNCERTAIN: self.uncertain_period,
+        }
+
+        enabled_uncertainties = [ k for k, v in uncertainty_map.items() if v == 'on']
+
+        if not enabled_uncertainties:
+            enabled_uncertainties = uncertainty_map.keys()
+            self.certain_period = 'on'
+            self.uncertain_period = 'on'
+
+        qs = qs.filter(period_uncertainty__in=enabled_uncertainties)
+
         self.type_pulsator = params.get('type_pulsator', 'off')
         self.type_rotator = params.get('type_rotator', 'off')
         self.type_ew = params.get('type_ew', 'off')
@@ -106,6 +123,8 @@ class StarListView(ListView):
         context = super().get_context_data(**kwargs)
         context['min_period'] = self.min_period
         context['max_period'] = self.max_period
+        context['certain_period'] = self.certain_period
+        context['uncertain_period'] = self.uncertain_period
         context['type_pulsator'] = self.type_pulsator
         context['type_eaeb'] = self.type_eaeb
         context['type_ew'] = self.type_ew
@@ -144,6 +163,8 @@ class GenerateExportView(View):
                 data_version=settings.DATA_VERSION,
                 min_period = min_period,
                 max_period = max_period,
+                certain_period = DataExport.CHECKBOX_CHOICES_DICT[request.POST.get('certain_period', 'on')],
+                uncertain_period = DataExport.CHECKBOX_CHOICES_DICT[request.POST.get('uncertain_period', 'on')],
                 type_pulsator = DataExport.CHECKBOX_CHOICES_DICT[request.POST.get('type_pulsator', 'on')],
                 type_eaeb = DataExport.CHECKBOX_CHOICES_DICT[request.POST.get('type_eaeb', 'on')],
                 type_ew = DataExport.CHECKBOX_CHOICES_DICT[request.POST.get('type_ew', 'on')],

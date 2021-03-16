@@ -75,24 +75,36 @@
         </div>
         </div>
         <div class="btn-group">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="periodButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Period
-        </button>
-        <div class="dropdown-menu px-3" aria-labelledby="periodButton">
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="period-min-label">Min</span>
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="periodButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Period
+          </button>
+          <div class="dropdown-menu px-3" aria-labelledby="periodButton">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="period-min-label">Min</span>
+              </div>
+              <input type="text" name="min_period" class="form-control" placeholder="" value="{% if min_period %}{{ min_period }}{% endif %}" aria-label="Minimum period" aria-describedby="period-min-label">
+            </div>    
+            
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="period-max-label">Max</span>
+              </div>
+              <input type="text" name="max_period" class="form-control" placeholder="" value="{% if max_period %}{{ max_period }}{% endif %}" aria-label="Maximum period" aria-describedby="period-max-label">
+            </div> 
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="certain_period" id="certain_period" {% if certain_period == 'on' %}checked {% endif %}>
+              <label class="form-check-label" for="certain_period">
+                Certain
+              </label>
             </div>
-            <input type="text" name="min_period" class="form-control" placeholder="" value="{% if min_period %}{{ min_period }}{% endif %}" aria-label="Minimum period" aria-describedby="period-min-label">
-          </div>    
-          
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="period-max-label">Max</span>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="uncertain_period" id="uncertain_period" {% if uncertain_period == 'on' %}checked {% endif %}>
+              <label class="form-check-label" for="uncertain_period">
+                Uncertain
+              </label>
             </div>
-            <input type="text" name="max_period" class="form-control" placeholder="" value="{% if max_period %}{{ max_period }}{% endif %}" aria-label="Maximum period" aria-describedby="period-max-label">
-          </div> 
-        </div>
+          </div>
         </div>
         <div class="btn-group">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="typeButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -100,31 +112,31 @@
         </button>
         <div class="dropdown-menu px-3" aria-labelledby="typeButton">
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="type_pulsator" id="type_pulsator" {% if type_pulsator %}checked {% endif %}>
+            <input class="form-check-input" type="checkbox" name="type_pulsator" id="type_pulsator" {% if type_pulsator == 'on' %}checked {% endif %}>
             <label class="form-check-label" for="type_pulsator">
               Pulsator
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="type_rotator" id="type_rotator" {% if type_rotator %}checked {% endif %}>
+            <input class="form-check-input" type="checkbox" name="type_rotator" id="type_rotator" {% if type_rotator == 'on' %}checked {% endif %}>
             <label class="form-check-label" for="type_rotator">
               Rotator
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="type_eaeb" id="type_eaeb" {% if type_eaeb %}checked {% endif %}>
+            <input class="form-check-input" type="checkbox" name="type_eaeb" id="type_eaeb" {% if type_eaeb == 'on' %}checked {% endif %}>
             <label class="form-check-label" for="type_eaeb">
               EA/EB
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="type_ew"  id="type_ew" {% if type_ew %}checked {% endif %}>
+            <input class="form-check-input" type="checkbox" name="type_ew"  id="type_ew" {% if type_ew == 'on' %}checked {% endif %}>
             <label class="form-check-label" for="type_ew">
               EW
             </label>
           </div>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="type_unknown" id="type_unknown" {% if type_unknown %}checked {% endif %}>
+            <input class="form-check-input" type="checkbox" name="type_unknown" id="type_unknown" {% if type_unknown == 'on' %}checked {% endif %}>
             <label class="form-check-label" for="type_unknown">
               Unknown
             </label>
@@ -141,6 +153,8 @@
   {% csrf_token %}
   <input type="hidden" name="min_period" value="{% if min_period %}{{ min_period }}{% endif %}">
   <input type="hidden" name="max_period" value="{% if max_period %}{{ max_period }}{% endif %}">
+  <input type="hidden" name="certain_period" value="{% if certain_period %}{{ certain_period }}{% endif %}">
+  <input type="hidden" name="uncertain_period" value="{% if uncertain_period %}{{ uncertain_period }}{% endif %}">
   <input type="hidden" name="type_pulsator" value="{% if type_pulsator %}{{ type_pulsator }}{% endif %}">
   <input type="hidden" name="type_eaeb" value="{% if type_eaeb %}{{ type_eaeb }}{% endif %}">
   <input type="hidden" name="type_ew" value="{% if type_ew %}{{ type_ew }}{% endif %}">
@@ -175,10 +189,10 @@
             <tr>
                 <th scope="col">SuperWASP ID</th>
                 <th scope="col">Period (seconds)</th>
+                <th scope="col">Classification</th>
+                <th scope="col">Period Uncertainty</th>
                 <th scope="col">RA</th>
                 <th scope="col">Dec</th>
-                <th scope="col">Classification</th>
-                <th scope="col">Zooniverse Talk</th>
                 <th scope="col">Lightcurve</th>
             </tr>
         </thead>
@@ -187,10 +201,10 @@
             <tr>
                 <td><a href="{% url 'view_source' lightcurve.star.superwasp_id %}">{{ lightcurve.star.superwasp_id }}</a></td>
                 <td>{{ lightcurve.period_length }} (~{{ lightcurve.natural_period }})</td>
+                <td>{{ lightcurve.get_classification_display }}</td>
+                <td>{{ lightcurve.get_period_uncertainty_display }}</td>
                 <td>{{ lightcurve.star.ra }}</td>
                 <td>{{ lightcurve.star.dec }}</td>
-                <td>{{ lightcurve.get_classification_display }}</td>
-                <td><a href="https://www.zooniverse.org/projects/ajnorton/superwasp-variable-stars/talk/subjects/{{ lightcurve.zooniversesubject.zooniverse_id }}">View on Talk</a></td>
                 <td><a href="{% url 'view_source' lightcurve.star.superwasp_id %}#lightcurve-{{ lightcurve.pk }}"><img src="{{ lightcurve.thumbnail_location }}" alt="" style="width: 100px; height: auto;"></a></td>
             </tr>
         {% endfor %}
