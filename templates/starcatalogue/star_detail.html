@@ -23,11 +23,23 @@
             <tbody>
                 <tr>
                     <th scope="row">RA</th>
-                    <td>{{ object.ra }}</td>
+                    <td colspan=>{{ object.ra }}</td>
                 </tr>
                 <tr>
                     <th scope="row">Dec</th>
                     <td>{{ object.dec }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Minumum Magnitude</th>
+                    <td>{{ object.min_magnitude|floatformat:2 }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Maximum Magnitude</th>
+                    <td>{{ object.max_magnitude|floatformat:2 }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Mean Magnitude</th>
+                    <td>{{ object.mean_magnitude|floatformat:2 }}</td>
                 </tr>
                 {% if object.fits %}
                 <tr>

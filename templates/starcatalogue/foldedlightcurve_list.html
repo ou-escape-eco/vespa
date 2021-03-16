@@ -188,6 +188,7 @@
         <thead>
             <tr>
                 <th scope="col">SuperWASP ID</th>
+                <th scope="col">Mean Magnitude</th>
                 <th scope="col">Period (seconds)</th>
                 <th scope="col">Classification</th>
                 <th scope="col">Period Uncertainty</th>
@@ -200,6 +201,7 @@
           {% for lightcurve in object_list %}
             <tr>
                 <td><a href="{% url 'view_source' lightcurve.star.superwasp_id %}">{{ lightcurve.star.superwasp_id }}</a></td>
+                <td>{{ lightcurve.star.mean_magnitude|floatformat:2 }}</td>
                 <td>{{ lightcurve.period_length }} (~{{ lightcurve.natural_period }})</td>
                 <td>{{ lightcurve.get_classification_display }}</td>
                 <td>{{ lightcurve.get_period_uncertainty_display }}</td>

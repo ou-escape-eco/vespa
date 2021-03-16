@@ -2,6 +2,8 @@ import datetime
 import urllib
 import uuid
 
+import numpy
+
 from django.db import models
 from django.utils import timezone
 
@@ -37,6 +39,10 @@ class Star(models.Model):
     image_file = models.ImageField(null=True, upload_to=star_upload_to)
     images_celery_task_id = models.UUIDField(null=True)
     image_version = models.FloatField(null=True)
+
+    _min_magnitude = models.FloatField(null=True)
+    _mean_magnitude = models.FloatField(null=True)
+    _max_magnitude = models.FloatField(null=True)
 
     @property
     def coords_str(self):
@@ -141,6 +147,37 @@ class Star(models.Model):
     @property
     def asassn_url(self):
         return f'https://asas-sn.osu.edu/photometry?ra={self.ra_quoted}&dec={self.dec_quoted}&radius=2'
+
+    def get_magnitude(self, attr_name='_mean_magnitude'):
+        agg_funcs = {
+            '_mean_magnitude': lambda x: x.mean(),
+            '_min_magnitude': lambda x: x.min(),
+            '_max_magnitude': lambda x: x.max(),
+        }
+
+        if getattr(self, attr_name):
+            return getattr(self, attr_name)
+
+        timeseries = self.timeseries
+        if not timeseries:
+            return
+        
+        mag = 15 - 2.5 * numpy.log(agg_funcs[attr_name](timeseries['TAMFLUX2'][~numpy.isnan(timeseries['TAMFLUX2'])]))
+        setattr(self, attr_name, mag)
+        self.save()
+        return mag
+
+    @property
+    def mean_magnitude(self):
+        return self.get_magnitude('_mean_magnitude')
+
+    @property
+    def max_magnitude(self):
+        return self.get_magnitude('_max_magnitude')
+
+    @property
+    def min_magnitude(self):
+        return self.get_magnitude('_min_magnitude')
 
 
 class FoldedLightcurve(models.Model):
