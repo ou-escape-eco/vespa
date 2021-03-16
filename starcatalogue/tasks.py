@@ -153,6 +153,7 @@ def generate_lightcurve_images(lightcurve_id):
 
     lightcurve.image_version = lightcurve.CURRENT_IMAGE_VERSION
     lightcurve.save()
+    pyplot.close()
 
 @shared_task
 def generate_star_images(star_id):
@@ -183,3 +184,4 @@ def generate_star_images(star_id):
     star.image_file.save(f'lightcurve.png', image_data)
     star.image_version = star.CURRENT_IMAGE_VERSION
     star.save()
+    pyplot.close()
