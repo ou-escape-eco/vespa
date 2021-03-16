@@ -70,7 +70,7 @@
 
 
 {% for lightcurve in object.lightcurves %}
-    <h2 class="mt-5" id="lightcurve-{{ lightcurve.pk }}"><a href="#lightcurve-{{ lightcurve.pk }}"><i class="bi bi-link"></i></a> {{ lightcurve.natural_period }}</h2>
+    <h2 class="mt-5" id="lightcurve-{{ lightcurve.pk }}"><a href="#lightcurve-{{ lightcurve.pk }}"><i class="bi bi-link"></i></a> {{ object.superwasp_id }} folded at {{ lightcurve.natural_period }}</h2>
 
     <div class="row mb-5">
         <div class="col">
