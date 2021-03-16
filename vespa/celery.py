@@ -21,6 +21,7 @@ app.autodiscover_tasks()
 @app.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(120.0, queue_image_generations.s())
+    sender.add_periodic_task(300, calculate_magnitudes.s())
 
 @app.task
 def queue_image_generations():
@@ -36,3 +37,16 @@ def queue_image_generations():
         | Q(image_version__lt=FoldedLightcurve.CURRENT_IMAGE_VERSION)
     )[:10]:
         lightcurve.get_image_location()
+
+@app.task
+def calculate_magnitudes():
+    from starcatalogue.models import Star
+    for star in Star.objects.filter(
+        Q(fits_file__isnull=False)
+        & (
+            Q(_min_magnitude__isnull=True)
+            | Q(_max_magnitude__isnull=True)
+            | Q(_mean_magnitude__isnull=True)
+        )
+    )[:100]:
+        star.calculate_magnitudes()

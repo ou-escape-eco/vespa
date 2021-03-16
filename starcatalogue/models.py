@@ -167,6 +167,15 @@ class Star(models.Model):
         self.save()
         return mag
 
+    def calculate_magnitudes(self):
+        attrs = (
+           '_mean_magnitude',
+           '_min_magnitude',
+           '_max_magnitude',
+        )
+        for attr_name in attrs:
+            self.get_magnitude(attr_name)
+
     @property
     def mean_magnitude(self):
         return self.get_magnitude('_mean_magnitude')

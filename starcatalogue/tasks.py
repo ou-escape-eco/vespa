@@ -106,6 +106,7 @@ def download_fits(star_id):
     star.save()
 
     star.get_image_location()
+    star.calculate_magnitudes()
 
     for lightcurve in star.foldedlightcurve_set.all():
         lightcurve.get_image_location()
@@ -154,6 +155,7 @@ def generate_lightcurve_images(lightcurve_id):
     lightcurve.image_version = lightcurve.CURRENT_IMAGE_VERSION
     lightcurve.save()
     pyplot.close()
+
 
 @shared_task
 def generate_star_images(star_id):
