@@ -4,3 +4,4 @@ postgres_data/
 exports/
 sources/
 fits/
+celerybeat-schedule

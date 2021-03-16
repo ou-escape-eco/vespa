@@ -8,4 +8,4 @@ echo Removing logs
 rm tmp/*.log
 
 echo Starting Celery
-exec celery -A vespa worker -l info
+exec celery -A vespa worker -B -l info
