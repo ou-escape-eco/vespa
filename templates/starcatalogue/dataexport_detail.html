@@ -19,6 +19,8 @@
                 {% csrf_token %}
                 {% if object.min_period %}<input type="hidden" name="min_period" value="{{ object.min_period }}">{% endif %}
                 {% if object.max_period %}<input type="hidden" name="max_period" value="{{ object.max_period }}">{% endif %}
+                {% if object.certain_period %}<input type="hidden" name="certain_period" value="{{ object.get_certain_period_display }}">{% endif %}
+                {% if object.uncertain_period %}<input type="hidden" name="uncertain_period" value="{{ object.get_uncertain_period_display }}">{% endif %}
                 {% if object.type_pulsator %}<input type="hidden" name="type_pulsator" value="{{ object.get_type_pulsator_display }}">{% endif %}
                 {% if object.type_eaeb %}<input type="hidden" name="type_eaeb" value="{{ object.get_type_eaeb_display }}">{% endif %}
                 {% if object.type_ew %}<input type="hidden" name="type_ew" value="{{ object.get_type_ew_display }}">{% endif %}
