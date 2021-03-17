@@ -18,6 +18,8 @@ from humanize.time import naturaldelta
 from humanize import naturalsize
 
 
+OUTLIER_SIGMA_CLIP = 5
+
 def export_upload_to(instance, filename):
     return f'exports/{instance.id.hex[:3]}/{instance.id.hex}/{filename}'
 
@@ -50,7 +52,7 @@ class ImageGenerator(object):
 
 
 class Star(models.Model, ImageGenerator):
-    CURRENT_IMAGE_VERSION = 0.6
+    CURRENT_IMAGE_VERSION = 0.9
 
     superwasp_id = models.CharField(unique=True, max_length=26)
     fits_file = models.FileField(null=True, upload_to=star_upload_to)
@@ -171,7 +173,7 @@ class Star(models.Model, ImageGenerator):
         if not timeseries:
             return
         
-        mag = 15 - 2.5 * numpy.log(agg_funcs[attr_name](sigma_clip(timeseries['TAMFLUX2'])))
+        mag = 15 - 2.5 * numpy.log(agg_funcs[attr_name](sigma_clip(timeseries['TAMFLUX2'], sigma=OUTLIER_SIGMA_CLIP)))
         setattr(self, attr_name, mag)
         self.save()
         return mag
@@ -223,7 +225,7 @@ class FoldedLightcurve(models.Model, ImageGenerator):
         (UNCERTAIN, 'Uncertain'),
     ]
 
-    CURRENT_IMAGE_VERSION = 0.4
+    CURRENT_IMAGE_VERSION = 0.7
 
     star = models.ForeignKey(to=Star, on_delete=models.CASCADE)
 

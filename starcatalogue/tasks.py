@@ -19,7 +19,7 @@ from matplotlib import pyplot
 
 from PIL import Image
 
-from .models import DataExport, Star, FoldedLightcurve
+from .models import DataExport, Star, FoldedLightcurve, OUTLIER_SIGMA_CLIP
 
 
 EXPORT_DATA_DESCRIPTION = {
@@ -126,7 +126,7 @@ def generate_lightcurve_images(lightcurve_id):
     ts_extend = ts.copy()
     ts_extend['time'] = ts_extend['time'] + epoch_length
     ts = vstack([ts, ts_extend])
-    ts_flux = sigma_clip(ts['TAMFLUX2'], sigma=4)
+    ts_flux = sigma_clip(ts['TAMFLUX2'], sigma=OUTLIER_SIGMA_CLIP)
     ts_data = {
         'time': ts.time.jd,
         'flux': ts_flux,
@@ -167,7 +167,7 @@ def generate_star_images(star_id):
     ts = star.timeseries
     if not ts:
         return
-    ts_flux = sigma_clip(ts['TAMFLUX2'], sigma=4)
+    ts_flux = sigma_clip(ts['TAMFLUX2'], sigma=OUTLIER_SIGMA_CLIP)
     ts_data = {
         'time': ts.time.jd,
         'flux': ts_flux,
