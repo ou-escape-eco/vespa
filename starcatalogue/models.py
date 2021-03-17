@@ -10,7 +10,7 @@ from django.utils import timezone
 import astropy.io.fits as fits
 from astropy import units
 from astropy.coordinates import SkyCoord
-
+from astropy.stats import sigma_clip
 from astropy.timeseries import TimeSeries
 
 from celery.result import AsyncResult
@@ -22,14 +22,35 @@ def export_upload_to(instance, filename):
     return f'exports/{instance.id.hex[:3]}/{instance.id.hex}/{filename}'
 
 def star_upload_to(instance, filename):
-    return f'sources/{instance.superwasp_id}/{filename}'
+    return f'sources/{instance.superwasp_id}/v{instance.CURRENT_IMAGE_VERSION}_{filename}'
 
 def lightcurve_upload_to(instance, filename):
-    return f'sources/{instance.star.superwasp_id}/{filename}'
+    return f'sources/{instance.star.superwasp_id}/v{instance.CURRENT_IMAGE_VERSION}_{filename}'
 
 
-class Star(models.Model):
-    CURRENT_IMAGE_VERSION = 0.1
+class ImageGenerator(object):
+    def get_or_generate_image(self, image_attr, generation_task, default=None):
+        image_not_present = not image_attr or not self.image_version
+        image_outdated = self.image_version and self.image_version < self.CURRENT_IMAGE_VERSION
+        if image_not_present or image_outdated:
+            if (
+                not self.images_celery_task_id
+                or AsyncResult(self.images_celery_task_id).ready()
+                or not self.image_celery_started
+                or self.image_celery_started < (timezone.now() - datetime.timedelta(minutes=5))
+            ):
+                self.images_celery_task_id = generation_task.delay(self.id).id
+                self.image_celery_started = timezone.now()
+                self.save()
+            if image_not_present:
+                return default
+        elif self.images_celery_task_id:
+            AsyncResult(self.images_celery_task_id).forget()
+        return image_attr.url
+
+
+class Star(models.Model, ImageGenerator):
+    CURRENT_IMAGE_VERSION = 0.6
 
     superwasp_id = models.CharField(unique=True, max_length=26)
     fits_file = models.FileField(null=True, upload_to=star_upload_to)
@@ -39,6 +60,7 @@ class Star(models.Model):
     image_file = models.ImageField(null=True, upload_to=star_upload_to)
     images_celery_task_id = models.UUIDField(null=True)
     image_version = models.FloatField(null=True)
+    image_celery_started = models.DateTimeField(null=True)
 
     _min_magnitude = models.FloatField(null=True)
     _mean_magnitude = models.FloatField(null=True)
@@ -119,22 +141,9 @@ class Star(models.Model):
     @property
     def image_location(self):
         return self.get_image_location()
-    
+
     def get_image_location(self):
-        if not self.image_file or not self.image_version or (
-            self.image_version 
-            and self.image_version < self.CURRENT_IMAGE_VERSION
-        ):
-            if (
-                not self.images_celery_task_id
-                or AsyncResult(self.images_celery_task_id).ready()
-            ):
-                self.images_celery_task_id = generate_star_images.delay(self.id).id
-                self.save()
-            return None
-        if self.images_celery_task_id:
-            AsyncResult(self.images_celery_task_id).forget()
-        return self.image_file.url
+        return self.get_or_generate_image(self.image_file, generate_star_images)
 
     @property
     def cerit_url(self):
@@ -155,14 +164,14 @@ class Star(models.Model):
             '_max_magnitude': lambda x: x.max(),
         }
 
-        if getattr(self, attr_name):
+        if getattr(self, attr_name) and not numpy.isnan(getattr(self, attr_name)):
             return getattr(self, attr_name)
 
         timeseries = self.timeseries
         if not timeseries:
             return
         
-        mag = 15 - 2.5 * numpy.log(agg_funcs[attr_name](timeseries['TAMFLUX2'][~numpy.isnan(timeseries['TAMFLUX2'])]))
+        mag = 15 - 2.5 * numpy.log(agg_funcs[attr_name](sigma_clip(timeseries['TAMFLUX2'])))
         setattr(self, attr_name, mag)
         self.save()
         return mag
@@ -186,10 +195,12 @@ class Star(models.Model):
 
     @property
     def min_magnitude(self):
+        self._min_magnitude = None
+        self.save()
         return self.get_magnitude('_min_magnitude')
 
 
-class FoldedLightcurve(models.Model):
+class FoldedLightcurve(models.Model, ImageGenerator):
     PULSATOR = 1
     EA_EB = 2
     EW = 3
@@ -212,7 +223,7 @@ class FoldedLightcurve(models.Model):
         (UNCERTAIN, 'Uncertain'),
     ]
 
-    CURRENT_IMAGE_VERSION = 0.3
+    CURRENT_IMAGE_VERSION = 0.4
 
     star = models.ForeignKey(to=Star, on_delete=models.CASCADE)
 
@@ -228,6 +239,7 @@ class FoldedLightcurve(models.Model):
     thumbnail_file = models.ImageField(null=True, upload_to=lightcurve_upload_to)
     images_celery_task_id = models.UUIDField(null=True)
     image_version = models.FloatField(null=True)
+    image_celery_started = models.DateTimeField(null=True)
 
     @property
     def natural_period(self):
@@ -238,40 +250,22 @@ class FoldedLightcurve(models.Model):
         return self.get_image_location()
 
     def get_image_location(self):
-        if not self.image_file or not self.image_version or (
-            self.image_version 
-            and self.image_version < self.CURRENT_IMAGE_VERSION
-        ):
-            if (
-                not self.images_celery_task_id
-                or AsyncResult(self.images_celery_task_id).ready()
-            ):
-                self.images_celery_task_id = generate_lightcurve_images.delay(self.id).id
-                self.save()
-            return self.zooniversesubject.image_location
-        if self.images_celery_task_id:
-            AsyncResult(self.images_celery_task_id).forget()
-        return self.image_file.url
+        return self.get_or_generate_image(
+            self.image_file,
+            generate_lightcurve_images,
+            self.zooniversesubject.image_location,
+        )
 
     @property
     def thumbnail_location(self):
         return self.get_thumbnail_location()
 
     def get_thumbnail_location(self):
-        if not self.thumbnail_file or not self.image_version or (
-            self.image_version 
-            and self.image_version < self.CURRENT_IMAGE_VERSION
-        ):
-            if (
-                not self.images_celery_task_id
-                or AsyncResult(self.images_celery_task_id).ready()
-            ):
-                self.images_celery_task_id = generate_lightcurve_images.delay(self.id).id
-                self.save()
-            return self.zooniversesubject.thumbnail_location
-        if self.images_celery_task_id:
-            AsyncResult(self.images_celery_task_id).forget()
-        return self.thumbnail_file.url
+        return self.get_or_generate_image(
+            self.thumbnail_file,
+            generate_lightcurve_images,
+            self.zooniversesubject.thumbnail_location,
+        )
 
     @property
     def timeseries(self):

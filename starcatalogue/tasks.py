@@ -167,10 +167,10 @@ def generate_star_images(star_id):
     ts = star.timeseries
     if not ts:
         return
-            
+    ts_flux = sigma_clip(ts['TAMFLUX2'], sigma=4)
     ts_data = {
         'time': ts.time.jd,
-        'flux': ts['TAMFLUX2'],
+        'flux': ts_flux,
     }
     fig = pyplot.figure()
     plot = seaborn.scatterplot(
