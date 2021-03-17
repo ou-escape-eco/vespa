@@ -186,4 +186,5 @@ def generate_star_images(star_id):
     star.image_file.save(f'lightcurve.png', image_data)
     star.image_version = star.CURRENT_IMAGE_VERSION
     star.save()
+    star.calculate_magnitudes(force=True)
     pyplot.close()

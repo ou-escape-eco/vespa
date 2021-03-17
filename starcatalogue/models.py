@@ -157,14 +157,14 @@ class Star(models.Model, ImageGenerator):
     def asassn_url(self):
         return f'https://asas-sn.osu.edu/photometry?ra={self.ra_quoted}&dec={self.dec_quoted}&radius=2'
 
-    def get_magnitude(self, attr_name='_mean_magnitude'):
+    def get_magnitude(self, attr_name='_mean_magnitude', force=False):
         agg_funcs = {
             '_mean_magnitude': lambda x: x.mean(),
             '_min_magnitude': lambda x: x.min(),
             '_max_magnitude': lambda x: x.max(),
         }
 
-        if getattr(self, attr_name) and not numpy.isnan(getattr(self, attr_name)):
+        if not force and getattr(self, attr_name) and not numpy.isnan(getattr(self, attr_name)):
             return getattr(self, attr_name)
 
         timeseries = self.timeseries
@@ -176,14 +176,14 @@ class Star(models.Model, ImageGenerator):
         self.save()
         return mag
 
-    def calculate_magnitudes(self):
+    def calculate_magnitudes(self, force=False):
         attrs = (
            '_mean_magnitude',
            '_min_magnitude',
            '_max_magnitude',
         )
         for attr_name in attrs:
-            self.get_magnitude(attr_name)
+            self.get_magnitude(attr_name, force=force)
 
     @property
     def mean_magnitude(self):
