@@ -41,7 +41,7 @@ This is deployed on a VPS with Podman. Here are the initial commands used to set
 ```
 podman pod create --name vespa -p 80:80
 
-podman run -d --restart=always --pod=vespa --name vespa-postgres --label "io.containers.autoupdate=image" -v /opt/vespa/psql:/var/lib/postgresql/data:z --env-file /opt/vespa/postgres.env docker.io/postgres:13.1
+podman run -d --restart=always --pod=vespa --name vespa-postgres --label "io.containers.autoupdate=image" -v /opt/vespa/psql:/var/lib/postgresql/data:z --env-file /opt/vespa/postgres.env ghcr.io/ou-escape-eco/vespa-postgresql:latest
 
 podman run -d --restart=always --pod=vespa --name vespa-rabbitmq --label "io.containers.autoupdate=image" -v /opt/vespa/rabbitmq/:/var/lib/rabbitmq/:z --env-file /opt/vespa/rabbitmq.env docker.io/rabbitmq:3
 
