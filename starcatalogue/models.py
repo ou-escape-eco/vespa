@@ -17,6 +17,8 @@ from celery.result import AsyncResult
 from humanize.time import naturaldelta
 from humanize import naturalsize
 
+from .fields import SPointField
+
 
 OUTLIER_SIGMA_CLIP = 5
 
@@ -68,6 +70,8 @@ class Star(models.Model, ImageGenerator):
     _mean_magnitude = models.FloatField(null=True)
     _max_magnitude = models.FloatField(null=True)
 
+    location = SPointField(null=True)
+
     @property
     def coords_str(self):
         return self.superwasp_id.replace('1SWASP', '')
@@ -97,6 +101,11 @@ class Star(models.Model, ImageGenerator):
     def dec_quoted(self):
         coords = self.coords_str
         return urllib.parse.quote(f'{coords[10:13]}:{coords[13:15]}:{coords[15:]}')
+
+    def set_location(self):
+        coords = self.coords
+        self.location = self.coords
+        self.save()
 
     @property
     def lightcurves(self):
