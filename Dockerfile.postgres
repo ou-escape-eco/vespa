@@ -5,6 +5,3 @@ RUN apt-get update \
       && apt-get install -y --no-install-recommends \
            postgresql-$PG_MAJOR-pgsphere \
       && rm -rf /var/lib/apt/lists/*
-
-RUN mkdir -p /docker-entrypoint-initdb.d
-COPY ./initdb-pgsphere.sh /docker-entrypoint-initdb.d/pgsphere.sh
