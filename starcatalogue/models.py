@@ -144,10 +144,15 @@ class Star(models.Model, ImageGenerator):
         if not self.fits:
             return
 
-        with fits.open(self.fits.path) as fits_file:
-            hjd_col = fits.Column(name='HJD', format='D', array=fits_file[1].data['TMID']/86400 + 2453005.5)
-            lc_data = fits.BinTableHDU.from_columns(fits_file[1].data.columns + fits.ColDefs([hjd_col]))
-            return TimeSeries.read(lc_data, time_column='HJD', time_format='jd')
+        try:
+            with fits.open(self.fits.path) as fits_file:
+                hjd_col = fits.Column(name='HJD', format='D', array=fits_file[1].data['TMID']/86400 + 2453005.5)
+                lc_data = fits.BinTableHDU.from_columns(fits_file[1].data.columns + fits.ColDefs([hjd_col]))
+                return TimeSeries.read(lc_data, time_column='HJD', time_format='jd')
+        except OSError as e:
+            self.fits = None
+            self.save()
+            raise e
 
     @property
     def image_location(self):
