@@ -22,6 +22,7 @@ app.autodiscover_tasks()
 def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(120.0, queue_image_generations.s())
     sender.add_periodic_task(300, calculate_magnitudes.s())
+    sender.add_periodic_task(60, set_locations.s())
 
 @app.task
 def queue_image_generations():
@@ -50,3 +51,9 @@ def calculate_magnitudes():
         )
     )[:100]:
         star.calculate_magnitudes()
+
+@app.task
+def set_locations():
+    from starcatalogue.models import Star
+    for star in Star.objects.filter(location=None)[:1000]:
+        star.set_location()
