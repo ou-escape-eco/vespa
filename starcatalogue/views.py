@@ -107,24 +107,24 @@ class StarListView(ListView):
                 self.search_radius = 90
 
             search_filter = None
+            coords = None
             if self.search.startswith('1SWASP'):
-                search_filter = Q(star__superwasp_id=self.search)
-            else:
                 try:
-                    search_filter = Q(zooniversesubject__zooniverse_id=int(self.search))
+                    coords = Star.objects.get(superwasp_id=self.search).coords
+                except Star.DoesNotExist:
+                    pass
+            
+            if coords is None:
+                try:
+                    coords = SkyCoord(self.search)
                 except ValueError:
-                    coords = None
-
                     try:
-                        coords = SkyCoord(self.search)
-                    except ValueError:
-                        try:
-                            coords = SkyCoord.from_name(self.search, parse=True)
-                        except NameResolveError:
-                            pass
-                    
-                    if coords is not None:
-                        search_filter = Q(star__location__inradius=((coords.ra.to_value(), coords.dec.to_value()), self.search_radius))
+                        coords = SkyCoord.from_name(self.search, parse=True)
+                    except NameResolveError:
+                        pass
+                
+            if coords is not None:
+                search_filter = Q(star__location__inradius=((coords.ra.to_value(), coords.dec.to_value()), self.search_radius))
             
             if search_filter is not None:
                 qs = qs.filter(search_filter)
