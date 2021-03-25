@@ -80,6 +80,7 @@ def generate_export(export_id):
                 'type_eaeb': export.type_eaeb,
                 'type_unknown': export.type_unknown,
                 'search': export.search,
+                'search_radius': export.search_radius,
                 'data_version': export.data_version,
                 'object_count': total_records,
             }))

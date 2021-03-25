@@ -3,76 +3,95 @@
 {% block title %}Browse the Catalogue{% endblock %}
 
 {% block content %}
-<form action="{% url 'browse' %}" method="GET" id="filter_form">
 <div class="row mt-5">
-  <div class="col">
-
-
-    <div class="btn-group filterBar">
-      <div class="btn-group">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="sortButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Sort
-        </button>
-        <div class="dropdown-menu px-3" aria-labelledby="sortButton">
-          <div class="container">
-            <div class="row align-items-start" style="width: 350px;">
-              <div class="col">
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="sort" value="star__superwasp_id" id="sort_swasp_id" {% if sort == 'star__superwasp_id' %}checked{% endif %}>
-              <label class="form-check-label" for="sort_swasp_id">
-                SuperWASP ID
-              </label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="sort" value="period_length" id="sort_period" {% if sort == 'period_length' %}checked{% endif %}>
-              <label class="form-check-label" for="sort_period">
-                Period
-              </label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="sort" value="classification" id="sort_classification" {% if sort == 'classification' %}checked{% endif %}>
-              <label class="form-check-label" for="sort_classification">
-                Classification
-              </label>
-            </div>
-          </div>
-          <div class="col">
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="order" value="asc" id="order_asc" {% if order == 'asc' %}checked{% endif %}>
-              <label class="form-check-label" for="order_asc">
-                Ascending
-              </label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="order" value="desc" id="order_desc" {% if order == 'desc' %}checked{% endif %}>
-              <label class="form-check-label" for="order_desc">
-                Descending
-              </label>
-            </div>
+  <form action="{% url 'browse' %}" method="GET" id="filter_form">
+    <input type="hidden" name="search" value="{% if search %}{{ search }}{% endif %}">
+    <input type="hidden" name="search_radius" value="{% if search_radius %}{{ search_radius }}{% endif %}">
+    <div class="col">
+      <div class="btn-group filterBar">
+        <div class="btn-group">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="searchButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Search
+          </button>
+          <div class="dropdown-menu px-3" aria-labelledby="searchButton">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="search-label">Object name or coordinates</span>
+              </div>
+              <input type="text" name="search" class="form-control" placeholder="" value="{% if search %}{{ search }}{% endif %}" aria-label="Object name or coordinates" aria-describedby="search-label">
+            </div>    
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="radius-label">Radius (degrees)</span>
+              </div>
+              <input type="text" name="search_radius" class="form-control" placeholder="" value="{% if search_radius %}{{ search_radius }}{% endif %}" aria-label="Radius (degrees)" aria-describedby="radius-label">
+            </div> 
           </div>
         </div>
-      </div>
-        </div>
-      </div>
-      <div class="btn-group">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="magnitudeButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Magnitude
-        </button>
-        <div class="dropdown-menu px-3" aria-labelledby="magnitudeButton">
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="mag-min-label">Min</span>
+        <div class="btn-group">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="sortButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Sort
+          </button>
+          <div class="dropdown-menu px-3" aria-labelledby="sortButton">
+            <div class="container">
+              <div class="row align-items-start" style="width: 350px;">
+                <div class="col">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sort" value="star__superwasp_id" id="sort_swasp_id" {% if sort == 'star__superwasp_id' %}checked{% endif %}>
+                    <label class="form-check-label" for="sort_swasp_id">
+                      SuperWASP ID
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sort" value="period_length" id="sort_period" {% if sort == 'period_length' %}checked{% endif %}>
+                    <label class="form-check-label" for="sort_period">
+                      Period
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sort" value="classification" id="sort_classification" {% if sort == 'classification' %}checked{% endif %}>
+                    <label class="form-check-label" for="sort_classification">
+                      Classification
+                    </label>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="order" value="asc" id="order_asc" {% if order == 'asc' %}checked{% endif %}>
+                    <label class="form-check-label" for="order_asc">
+                      Ascending
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="order" value="desc" id="order_desc" {% if order == 'desc' %}checked{% endif %}>
+                    <label class="form-check-label" for="order_desc">
+                      Descending
+                    </label>
+                  </div>
+                </div>
+              </div>
             </div>
-            <input type="text" name="min_mag" class="form-control" placeholder="" aria-label="Minimum magnitude" aria-describedby="mag-min-label" disabled>
-          </div>    
-          
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="mag-max-label">Max</span>
-            </div>
-            <input type="text" name="max_mag" class="form-control" placeholder="" aria-label="Maximum magnitude" aria-describedby="mag-max-label" disabled>
-          </div> 
+          </div>
         </div>
+        <div class="btn-group">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="magnitudeButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Magnitude
+          </button>
+          <div class="dropdown-menu px-3" aria-labelledby="magnitudeButton">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="mag-min-label">Min</span>
+              </div>
+              <input type="text" name="min_mag" class="form-control" placeholder="" aria-label="Minimum magnitude" aria-describedby="mag-min-label" disabled>
+            </div>    
+            
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="mag-max-label">Max</span>
+              </div>
+              <input type="text" name="max_mag" class="form-control" placeholder="" aria-label="Maximum magnitude" aria-describedby="mag-max-label" disabled>
+            </div> 
+          </div>
         </div>
         <div class="btn-group">
           <button class="btn btn-secondary dropdown-toggle" type="button" id="periodButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -84,8 +103,7 @@
                 <span class="input-group-text" id="period-min-label">Min</span>
               </div>
               <input type="text" name="min_period" class="form-control" placeholder="" value="{% if min_period %}{{ min_period }}{% endif %}" aria-label="Minimum period" aria-describedby="period-min-label">
-            </div>    
-            
+            </div>
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <span class="input-group-text" id="period-max-label">Max</span>
@@ -107,82 +125,67 @@
           </div>
         </div>
         <div class="btn-group">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="typeButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Variable type
-        </button>
-        <div class="dropdown-menu px-3" aria-labelledby="typeButton">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="type_pulsator" id="type_pulsator" {% if type_pulsator == 'on' %}checked {% endif %}>
-            <label class="form-check-label" for="type_pulsator">
-              Pulsator
-            </label>
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="typeButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Variable type
+          </button>
+          <div class="dropdown-menu px-3" aria-labelledby="typeButton">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="type_pulsator" id="type_pulsator" {% if type_pulsator == 'on' %}checked {% endif %}>
+              <label class="form-check-label" for="type_pulsator">
+                Pulsator
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="type_rotator" id="type_rotator" {% if type_rotator == 'on' %}checked {% endif %}>
+              <label class="form-check-label" for="type_rotator">
+                Rotator
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="type_eaeb" id="type_eaeb" {% if type_eaeb == 'on' %}checked {% endif %}>
+              <label class="form-check-label" for="type_eaeb">
+                EA/EB
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="type_ew"  id="type_ew" {% if type_ew == 'on' %}checked {% endif %}>
+              <label class="form-check-label" for="type_ew">
+                EW
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="type_unknown" id="type_unknown" {% if type_unknown == 'on' %}checked {% endif %}>
+              <label class="form-check-label" for="type_unknown">
+                Unknown
+              </label>
+            </div>
           </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="type_rotator" id="type_rotator" {% if type_rotator == 'on' %}checked {% endif %}>
-            <label class="form-check-label" for="type_rotator">
-              Rotator
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="type_eaeb" id="type_eaeb" {% if type_eaeb == 'on' %}checked {% endif %}>
-            <label class="form-check-label" for="type_eaeb">
-              EA/EB
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="type_ew"  id="type_ew" {% if type_ew == 'on' %}checked {% endif %}>
-            <label class="form-check-label" for="type_ew">
-              EW
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="type_unknown" id="type_unknown" {% if type_unknown == 'on' %}checked {% endif %}>
-            <label class="form-check-label" for="type_unknown">
-              Unknown
-            </label>
-          </div>
-        </div>
         </div>
         <input type="submit" value="Apply" class="btn btn-secondary">
+      </div>
     </div>
+  </form>
 
-  </div>
-</form>
-
-<form action="{% url 'generate_export' %}" method="POST" id="export_form">
-  {% csrf_token %}
-  <input type="hidden" name="min_period" value="{% if min_period %}{{ min_period }}{% endif %}">
-  <input type="hidden" name="max_period" value="{% if max_period %}{{ max_period }}{% endif %}">
-  <input type="hidden" name="certain_period" value="{% if certain_period %}{{ certain_period }}{% endif %}">
-  <input type="hidden" name="uncertain_period" value="{% if uncertain_period %}{{ uncertain_period }}{% endif %}">
-  <input type="hidden" name="type_pulsator" value="{% if type_pulsator %}{{ type_pulsator }}{% endif %}">
-  <input type="hidden" name="type_eaeb" value="{% if type_eaeb %}{{ type_eaeb }}{% endif %}">
-  <input type="hidden" name="type_ew" value="{% if type_ew %}{{ type_ew }}{% endif %}">
-  <input type="hidden" name="type_rotator" value="{% if type_rotator %}{{ type_rotator }}{% endif %}">
-  <input type="hidden" name="type_unknown" value="{% if type_unknown %}{{ type_unknown }}{% endif %}">
-  <input type="hidden" name="search" value="{% if search %}{{ search }}{% endif %}">
-  <div class="col">
-    <input type="submit" value="Export as CSV" class="btn btn-secondary">
-  </div>
-</form>
+  <form action="{% url 'generate_export' %}" method="POST" id="export_form">
+    {% csrf_token %}
+    <input type="hidden" name="min_period" value="{% if min_period %}{{ min_period }}{% endif %}">
+    <input type="hidden" name="max_period" value="{% if max_period %}{{ max_period }}{% endif %}">
+    <input type="hidden" name="certain_period" value="{% if certain_period %}{{ certain_period }}{% endif %}">
+    <input type="hidden" name="uncertain_period" value="{% if uncertain_period %}{{ uncertain_period }}{% endif %}">
+    <input type="hidden" name="type_pulsator" value="{% if type_pulsator %}{{ type_pulsator }}{% endif %}">
+    <input type="hidden" name="type_eaeb" value="{% if type_eaeb %}{{ type_eaeb }}{% endif %}">
+    <input type="hidden" name="type_ew" value="{% if type_ew %}{{ type_ew }}{% endif %}">
+    <input type="hidden" name="type_rotator" value="{% if type_rotator %}{{ type_rotator }}{% endif %}">
+    <input type="hidden" name="type_unknown" value="{% if type_unknown %}{{ type_unknown }}{% endif %}">
+    <input type="hidden" name="search" value="{% if search %}{{ search }}{% endif %}">
+    <input type="hidden" name="search_radius" value="{% if search_radius %}{{ search_radius }}{% endif %}">
+    <div class="col">
+      <input type="submit" value="Export as CSV" class="btn btn-secondary">
+    </div>
+  </form>
 
   {% include "starcatalogue/pagination.html" %}
-
-    <div class="modal fade" id="lightcurveModal" tabindex="-1" aria-labelledby="lightcurveModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="lightcurveModalLabel">Lightcurve</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <p><img src="#" alt="" style="width: 100%; height: auto;"></p>
-            </div>
-          </div>
-        </div>
-      </div>
+</div>
 
     <table class="table table-striped">
         <thead>

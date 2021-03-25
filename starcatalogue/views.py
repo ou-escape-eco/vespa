@@ -1,3 +1,7 @@
+from multiprocessing import Value
+from astropy.coordinates import SkyCoord
+from astropy.coordinates.name_resolve import NameResolveError
+
 from celery.result import AsyncResult
 
 from django.conf import settings
@@ -88,15 +92,42 @@ class StarListView(ListView):
         qs = qs.filter(classification__in=enabled_types)
 
         self.search = params.get('search', None)
-        if self.search:
-            search_filter = Q(star__superwasp_id=self.search)
+        self.search_radius = params.get('search_radius', None)
 
+
+        if self.search:
             try:
-                search_filter = search_filter | Q(zooniversesubject__zooniverse_id=int(self.search))
-            except ValueError:
-                pass
+               self.search_radius = float(self.search_radius)
+            except (ValueError, TypeError):
+               self.search_radius = 0.1
+
+            if self.search_radius < 0:
+                self.search_radius = 0
+            if self.search_radius > 90:
+                self.search_radius = 90
+
+            search_filter = None
+            if self.search.startswith('1SWASP'):
+                search_filter = Q(star__superwasp_id=self.search)
+            else:
+                try:
+                    search_filter = Q(zooniversesubject__zooniverse_id=int(self.search))
+                except ValueError:
+                    coords = None
+
+                    try:
+                        coords = SkyCoord(self.search)
+                    except ValueError:
+                        try:
+                            coords = SkyCoord.from_name(self.search, parse=True)
+                        except NameResolveError:
+                            pass
+                    
+                    if coords is not None:
+                        search_filter = Q(star__location__inradius=((coords.ra.to_value(), coords.dec.to_value()), self.search_radius))
             
-            qs = qs.filter(search_filter)
+            if search_filter is not None:
+                qs = qs.filter(search_filter)
 
         sort_fields = (
             'star__superwasp_id',
@@ -131,6 +162,7 @@ class StarListView(ListView):
         context['type_rotator'] = self.type_rotator
         context['type_unknown'] = self.type_unknown
         context['search'] = self.search
+        context['search_radius'] = self.search_radius
         context['sort'] = self.sort
         context['order'] = self.order
 
@@ -159,6 +191,10 @@ class GenerateExportView(View):
             if not max_period:
                 max_period = None
 
+            search_radius = request.POST.get('search_radius', None)
+            if not search_radius:
+                search_radius = None
+
             export, created = DataExport.objects.get_or_create(
                 data_version=settings.DATA_VERSION,
                 min_period = min_period,
@@ -171,6 +207,7 @@ class GenerateExportView(View):
                 type_rotator = DataExport.CHECKBOX_CHOICES_DICT[request.POST.get('type_rotator', 'on')],
                 type_unknown = DataExport.CHECKBOX_CHOICES_DICT[request.POST.get('type_unknown', 'on')],
                 search = request.POST.get('search', None),
+                search_radius = search_radius,
             )
             if (
                 export.export_status in (export.STATUS_PENDING, export.STATUS_FAILED) 

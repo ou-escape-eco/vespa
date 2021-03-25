@@ -27,6 +27,7 @@
                 {% if object.type_rotator %}<input type="hidden" name="type_rotator" value="{{ object.get_type_rotator_display }}">{% endif %}
                 {% if object.type_unknown %}<input type="hidden" name="type_unknown" value="{{ object.get_type_unknown_display }}">{% endif %}
                 {% if object.search %}<input type="hidden" name="search" value="{{ object.search }}">{% endif %}
+                {% if object.search_radius %}<input type="hidden" name="search" value="{{ object.search_radius }}">{% endif %}
                 <div class="col">
                   <input type="submit" value="Retry" class="btn btn-secondary">
                 </div>
@@ -98,6 +99,10 @@
             <tr>
                 <th scope="row">Search Query</th>
                 <td>{{ object.search }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Search Radius</th>
+                <td>{{ object.search_radius }}{% if object.search_radius %} degrees{% endif %}</td>
             </tr>
             </tbody>
         </table>

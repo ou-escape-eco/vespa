@@ -339,6 +339,7 @@ class DataExport(models.Model):
     type_eaeb = models.BooleanField(choices=CHECKBOX_CHOICES, default=True)
     type_unknown = models.BooleanField(choices=CHECKBOX_CHOICES, default=True)
     search = models.TextField(null=True)
+    search_radius = models.FloatField(null=True)
 
     data_version = models.FloatField()
 
@@ -366,6 +367,7 @@ class DataExport(models.Model):
             'type_eaeb': self.get_type_eaeb_display(),
             'type_unknown': self.get_type_unknown_display(),
             'search': self.search,
+            'search_radius': self.search_radius,
         }
     
     @property
