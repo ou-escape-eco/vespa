@@ -104,7 +104,7 @@ class Star(models.Model, ImageGenerator):
 
     def set_location(self):
         coords = self.coords
-        self.location = self.coords
+        self.location = (coords.ra.to_value(), coords.dec.to_value())
         self.save()
 
     @property
