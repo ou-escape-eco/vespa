@@ -23,6 +23,7 @@ pyyaml = "*"
 django-celery-results = "*"
 seaborn = "*"
 pillow = "*"
+sentry-sdk = "*"
 
 [requires]
 python_version = "3.8"
