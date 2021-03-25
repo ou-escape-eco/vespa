@@ -150,7 +150,7 @@ class Star(models.Model, ImageGenerator):
                 lc_data = fits.BinTableHDU.from_columns(fits_file[1].data.columns + fits.ColDefs([hjd_col]))
                 return TimeSeries.read(lc_data, time_column='HJD', time_format='jd')
         except OSError as e:
-            self.fits = None
+            self.fits_file = None
             self.save()
             raise e
 
