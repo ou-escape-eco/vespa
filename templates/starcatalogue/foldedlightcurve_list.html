@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load starcatalogue_tags %} 
 
 {% block title %}Browse the Catalogue{% endblock %}
 
@@ -248,7 +249,7 @@
               </tr>
               {% if coords %}<tr>
                 <th scope="row">Distance from search</th>
-                <td>5 arcsec</td>
+                <td>{% lightcurve_distance lightcurve %}</td>
               </tr>{% endif %}
             </table>
           </div>

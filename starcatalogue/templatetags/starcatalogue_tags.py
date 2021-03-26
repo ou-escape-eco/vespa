@@ -1,9 +1,8 @@
-# From https://www.caktusgroup.com/blog/2018/10/18/filtering-and-pagination-django/
 from django import template
 
 register = template.Library()
 
-
+# From https://www.caktusgroup.com/blog/2018/10/18/filtering-and-pagination-django/
 @register.simple_tag(takes_context=True)
 def param_replace(context, **kwargs):
     """
@@ -31,3 +30,10 @@ def param_replace(context, **kwargs):
     for k in [k for k, v in d.items() if not v]:
         del d[k]
     return d.urlencode()
+
+@register.simple_tag(takes_context=True)
+def lightcurve_distance(context, lightcurve):
+    if 'coords' not in context:
+        return
+    
+    return context['coords'].separation(lightcurve.star.coords)
