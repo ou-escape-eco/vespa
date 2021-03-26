@@ -187,6 +187,7 @@
   {% include "starcatalogue/pagination.html" %}
 </div>
 
+  {% if object_list %}
     <table class="table table-striped">
         <thead>
             <tr>
@@ -217,6 +218,17 @@
     </table>
 
     {% include "starcatalogue/pagination.html" %}
+  {% else %}
+    <div class="row mt-3">
+      <div class="col text-center">
+        <h2>No results found</h2>
+        <p><i class="bi bi-search" style="font-size: xxx-large;"></i></p>
+        <p class="lead">There were no results{% if search %} for <strong>&quot;{{ search }}&quot;</strong>{% endif %}.</p>
+        <p>Please try another search or choose less specific filtering options.</p>
+      </div>
+
+    </div>
+  {% endif %}
 
 
 {% endblock %}

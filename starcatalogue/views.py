@@ -106,7 +106,6 @@ class StarListView(ListView):
             if self.search_radius > 90:
                 self.search_radius = 90
 
-            search_filter = None
             coords = None
             if self.search.startswith('1SWASP'):
                 try:
@@ -123,11 +122,15 @@ class StarListView(ListView):
                     except NameResolveError:
                         pass
                 
-            if coords is not None:
-                search_filter = Q(star__location__inradius=((coords.ra.to_value(), coords.dec.to_value()), self.search_radius))
-            
-            if search_filter is not None:
-                qs = qs.filter(search_filter)
+            if coords is None:
+                qs = qs.none()
+            else:
+                qs = qs.filter(Q(
+                    star__location__inradius=(
+                        (coords.ra.to_value(), coords.dec.to_value()),
+                        self.search_radius
+                    )
+                ))
 
         sort_fields = (
             'star__superwasp_id',
