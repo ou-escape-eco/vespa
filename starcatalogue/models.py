@@ -1,4 +1,5 @@
 import datetime
+import logging
 import urllib
 import uuid
 
@@ -21,6 +22,9 @@ from .fields import SPointField
 
 
 OUTLIER_SIGMA_CLIP = 5
+
+logger = logging.getLogger(__name__)
+
 
 def export_upload_to(instance, filename):
     return f'exports/{instance.id.hex[:3]}/{instance.id.hex}/{filename}'
@@ -150,9 +154,10 @@ class Star(models.Model, ImageGenerator):
                 lc_data = fits.BinTableHDU.from_columns(fits_file[1].data.columns + fits.ColDefs([hjd_col]))
                 return TimeSeries.read(lc_data, time_column='HJD', time_format='jd')
         except OSError as e:
+            logger.error(f'Could not read FITS file {self.fits.path} for star {self.id}')
+            logger.error(str(e))
             self.fits_file = None
             self.save()
-            raise e
 
     @property
     def image_location(self):
