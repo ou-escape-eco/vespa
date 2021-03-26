@@ -19,13 +19,13 @@
               <div class="input-group-prepend">
                 <span class="input-group-text" id="search-label">Object name or coordinates</span>
               </div>
-              <input type="text" name="search" class="form-control" placeholder="" value="{% if search %}{{ search }}{% endif %}" aria-label="Object name or coordinates" aria-describedby="search-label">
+              <input type="text" name="search" class="form-control" placeholder="e.g. &quot;RR Lyrae&quot; or &quot;19h25m27s +42d47m03s&quot;" value="{% if search %}{{ search }}{% endif %}" aria-label="Object name or coordinates" aria-describedby="search-label" data-toggle="tooltip" data-placement="right" title="Enter any object name/ID or coordinates in any format">
             </div>    
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <span class="input-group-text" id="radius-label">Radius (degrees)</span>
               </div>
-              <input type="text" name="search_radius" class="form-control" placeholder="" value="{% if search_radius %}{{ search_radius }}{% endif %}" aria-label="Radius (degrees)" aria-describedby="radius-label">
+              <input type="text" name="search_radius" class="form-control" placeholder="0.1" value="{% if search_radius %}{{ search_radius }}{% endif %}" aria-label="Radius (degrees)" aria-describedby="radius-label">
             </div> 
           </div>
         </div>
@@ -327,6 +327,7 @@ $(document).ready(function() {
   if (Cookies.get('compactView') == 'true') {
     $(`#compactSwitch`).click();
   }
+  $('[data-toggle="tooltip"]').tooltip();
 });
 </script>
 {% endblock %}
