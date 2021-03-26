@@ -93,7 +93,7 @@ class StarListView(ListView):
 
         self.search = params.get('search', None)
         self.search_radius = params.get('search_radius', None)
-
+        self.coords = None
 
         if self.search:
             try:
@@ -106,28 +106,27 @@ class StarListView(ListView):
             if self.search_radius > 90:
                 self.search_radius = 90
 
-            coords = None
             if self.search.startswith('1SWASP'):
                 try:
-                    coords = Star.objects.get(superwasp_id=self.search).coords
+                    self.coords = Star.objects.get(superwasp_id=self.search).coords
                 except Star.DoesNotExist:
                     pass
             
-            if coords is None:
+            if self.coords is None:
                 try:
-                    coords = SkyCoord(self.search)
+                    self.coords = SkyCoord(self.search)
                 except ValueError:
                     try:
-                        coords = SkyCoord.from_name(self.search, parse=True)
+                        self.coords = SkyCoord.from_name(self.search, parse=True)
                     except NameResolveError:
                         pass
                 
-            if coords is None:
+            if self.coords is None:
                 qs = qs.none()
             else:
                 qs = qs.filter(Q(
                     star__location__inradius=(
-                        (coords.ra.to_value(), coords.dec.to_value()),
+                        (self.coords.ra.to_value(), self.coords.dec.to_value()),
                         self.search_radius
                     )
                 ))
@@ -166,6 +165,7 @@ class StarListView(ListView):
         context['type_unknown'] = self.type_unknown
         context['search'] = self.search
         context['search_radius'] = self.search_radius
+        context['coords'] = self.coords
         context['sort'] = self.sort
         context['order'] = self.order
 

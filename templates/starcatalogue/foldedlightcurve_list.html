@@ -183,41 +183,87 @@
       <input type="submit" value="Export as CSV" class="btn btn-secondary">
     </div>
   </form>
-
-  {% include "starcatalogue/pagination.html" %}
+  <div class="col pt-2">
+    <div class="custom-control custom-switch">
+      <input type="checkbox" class="custom-control-input" id="compactSwitch">
+      <label class="custom-control-label" for="compactSwitch">Compact view</label>
+    </div>
+  </div>
 </div>
 
+<div class="row mt-2">
+  {% include "starcatalogue/pagination.html" %}
+</div>
   {% if object_list %}
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th scope="col">SuperWASP ID</th>
-                <th scope="col">Mean Magnitude</th>
-                <th scope="col">Period (seconds)</th>
-                <th scope="col">Classification</th>
-                <th scope="col">Period Uncertainty</th>
-                <th scope="col">RA</th>
-                <th scope="col">Dec</th>
-                <th scope="col">Lightcurve</th>
-            </tr>
-        </thead>
-        <tbody>
-          {% for lightcurve in object_list %}
-            <tr>
-                <td><a href="{% url 'view_source' lightcurve.star.superwasp_id %}">{{ lightcurve.star.superwasp_id }}</a></td>
+  <table class="table table-striped d-none" id="compactView">
+    <thead>
+        <tr>
+            <th scope="col">SuperWASP ID</th>
+            <th scope="col">Mean Magnitude</th>
+            <th scope="col">Period (seconds)</th>
+            <th scope="col">Classification</th>
+            <th scope="col">Period Uncertainty</th>
+            <th scope="col">RA</th>
+            <th scope="col">Dec</th>
+            <th scope="col">Lightcurve</th>
+        </tr>
+    </thead>
+    <tbody>
+      {% for lightcurve in object_list %}
+        <tr>
+            <td><a href="{% url 'view_source' lightcurve.star.superwasp_id %}">{{ lightcurve.star.superwasp_id }}</a></td>
+            <td>{{ lightcurve.star.mean_magnitude|floatformat:2 }}</td>
+            <td>{{ lightcurve.period_length }} (~{{ lightcurve.natural_period }})</td>
+            <td>{{ lightcurve.get_classification_display }}</td>
+            <td>{{ lightcurve.get_period_uncertainty_display }}</td>
+            <td>{{ lightcurve.star.ra }}</td>
+            <td>{{ lightcurve.star.dec }}</td>
+            <td><a href="{% url 'view_source' lightcurve.star.superwasp_id %}#lightcurve-{{ lightcurve.pk }}"><img src="{{ lightcurve.thumbnail_location }}" alt="" style="width: 100px; height: auto;"></a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+    <div class="list-group mb-5" id="expandedView">
+      {% for lightcurve in object_list %}
+      <div class="list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1"><a href="{% url 'view_source' lightcurve.star.superwasp_id %}">{{ lightcurve.star.superwasp_id }}</a></h5>
+          <small>{{ lightcurve.period_length }} second period, ~{{ lightcurve.natural_period }}</small>
+        </div>
+        <small>{{ lightcurve.star.ra }} {{ lightcurve.star.dec }}</small>
+        <div class="row mt-3">
+          <div class="col">
+            <table class="table">
+              <tr>
+                <th scope="row">Mean magnitude</th>
                 <td>{{ lightcurve.star.mean_magnitude|floatformat:2 }}</td>
-                <td>{{ lightcurve.period_length }} (~{{ lightcurve.natural_period }})</td>
-                <td>{{ lightcurve.get_classification_display }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Period uncertainty</th>
                 <td>{{ lightcurve.get_period_uncertainty_display }}</td>
-                <td>{{ lightcurve.star.ra }}</td>
-                <td>{{ lightcurve.star.dec }}</td>
-                <td><a href="{% url 'view_source' lightcurve.star.superwasp_id %}#lightcurve-{{ lightcurve.pk }}"><img src="{{ lightcurve.thumbnail_location }}" alt="" style="width: 100px; height: auto;"></a></td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    {% include "starcatalogue/pagination.html" %}
+              </tr>
+              <tr>
+                <th scope="row">Classification count</th>
+                <td>{{ lightcurve.classification_count }}</td>
+              </tr>
+              {% if coords %}<tr>
+                <th scope="row">Distance from search</th>
+                <td>5 arcsec</td>
+              </tr>{% endif %}
+            </table>
+          </div>
+          <div class="col">
+            <div class="card shadow-sm mb-4 float-right" style="max-width: 300px;">
+              <a href="{% url 'view_source' lightcurve.star.superwasp_id %}#lightcurve-{{ lightcurve.pk }}"><img src="{{ lightcurve.image_location }}" class="card-img-top"></a>
+              <div class="card-body">
+                <p class="card-text">{{ lightcurve.get_classification_display }}, {{ lightcurve.natural_period }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+      {% endfor %}
+    </div>
   {% else %}
     <div class="row mt-3">
       <div class="col text-center">
@@ -229,8 +275,14 @@
 
     </div>
   {% endif %}
+  <div class="row mt-2">
+    {% include "starcatalogue/pagination.html" %}
+  </div>
 
+{% endblock %}
 
+{% block headEnd %}
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
 {% endblock %}
 
 {% block bodyEnd %}
@@ -255,6 +307,24 @@ $('#export_form input').each(function (){
         }
       }
     })
+  }
+});
+
+// Toggling between views
+$(`#compactSwitch`).on('change.bootstrapSwitch', function(e) {
+  Cookies.set('compactView', e.target.checked);
+  if (e.target.checked) {
+    $(`#expandedView`).addClass('d-none');
+    $(`#compactView`).removeClass('d-none');
+  } else {
+    $(`#compactView`).addClass('d-none');
+    $(`#expandedView`).removeClass('d-none');
+  }
+})
+
+$(document).ready(function() {
+  if (Cookies.get('compactView') == 'true') {
+    $(`#compactSwitch`).click();
   }
 });
 </script>
