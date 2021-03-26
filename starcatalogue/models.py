@@ -64,6 +64,7 @@ class Star(models.Model, ImageGenerator):
     fits_file = models.FileField(null=True, upload_to=star_upload_to)
     fits_celery_task_id = models.UUIDField(null=True)
     fits_celery_started = models.DateTimeField(null=True)
+    fits_error_count = models.IntegerField(default=0)
 
     image_file = models.ImageField(null=True, upload_to=star_upload_to)
     images_celery_task_id = models.UUIDField(null=True)
@@ -157,6 +158,7 @@ class Star(models.Model, ImageGenerator):
             logger.warning(f'Could not read FITS file {self.fits.path} for star {self.id}')
             logger.warning(str(e))
             self.fits_file = None
+            self.fits_error_count += 1
             self.save()
 
     @property

@@ -27,13 +27,13 @@ def setup_periodic_tasks(sender, **kwargs):
 @app.task
 def queue_image_generations():
     from starcatalogue.models import Star, FoldedLightcurve
-    for star in Star.objects.filter(
+    for star in Star.objects.filter(fits_error_count__lt=5).filter(
         Q(image_version=None) 
         | Q(image_version__lt=Star.CURRENT_IMAGE_VERSION)
     )[:10]:
         star.get_image_location()
 
-    for lightcurve in FoldedLightcurve.objects.filter(
+    for lightcurve in FoldedLightcurve.objects.filter(star__fits_error_count__lt=5).filter(
         Q(image_version=None) 
         | Q(image_version__lt=FoldedLightcurve.CURRENT_IMAGE_VERSION)
     )[:10]:

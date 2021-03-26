@@ -97,6 +97,8 @@ def generate_export(export_id):
 @shared_task
 def download_fits(star_id):
     star = Star.objects.get(id=star_id)
+    if star.fits_error_count >= 5:
+        return
     encoded_params = urllib.parse.urlencode(
         {'objid': star.superwasp_id.replace('1SWASP', '1SWASP ')},
         quote_via=urllib.parse.quote,
