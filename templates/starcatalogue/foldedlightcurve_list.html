@@ -38,6 +38,12 @@
               <div class="row align-items-start" style="width: 350px;">
                 <div class="col">
                   <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sort" value="distance" id="sort_distance" {% if sort == 'distance' %}checked{% endif %}>
+                    <label class="form-check-label" for="sort_distance">
+                      Distance
+                    </label>
+                  </div>
+                  <div class="form-check">
                     <input class="form-check-input" type="radio" name="sort" value="star__superwasp_id" id="sort_swasp_id" {% if sort == 'star__superwasp_id' %}checked{% endif %}>
                     <label class="form-check-label" for="sort_swasp_id">
                       SuperWASP ID
@@ -247,9 +253,9 @@
                 <th scope="row">Classification count</th>
                 <td>{{ lightcurve.classification_count }}</td>
               </tr>
-              {% if coords %}<tr>
+              {% if search %}<tr>
                 <th scope="row">Distance from search</th>
-                <td>{% lightcurve_distance lightcurve %}</td>
+                <td>{% degrees lightcurve.distance %}</td>
               </tr>{% endif %}
             </table>
           </div>

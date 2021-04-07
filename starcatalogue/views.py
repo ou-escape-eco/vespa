@@ -1,11 +1,11 @@
-from multiprocessing import Value
 from astropy.coordinates import SkyCoord
 from astropy.coordinates.name_resolve import NameResolveError
+from astropy import units as u
 
 from celery.result import AsyncResult
 
 from django.conf import settings
-from django.db.models import Q
+from django.db.models import Q, F
 from django.http import HttpResponseRedirect, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -15,6 +15,7 @@ from django.views.generic import DetailView
 from django.views import View
 
 from starcatalogue.models import Star, FoldedLightcurve, DataExport
+from starcatalogue.fields import Distance
 
 
 class StarListView(ListView):
@@ -132,14 +133,14 @@ class StarListView(ListView):
                 ))
 
         sort_fields = (
+            'distance',
             'star__superwasp_id',
             'period_length',
             'classification',
         )
-
         self.sort = params.get('sort', None)
         if self.sort not in sort_fields:
-            self.sort = 'star__superwasp_id'
+            self.sort = sort_fields[0]
 
         self.order = params.get('order', None)
         if self.order == 'desc':
@@ -148,7 +149,14 @@ class StarListView(ListView):
             order_prefix = ''
             self.order = 'asc' # To ditch any invalid values
         
-        qs = qs.order_by('{}{}'.format(order_prefix, self.sort))
+        if self.coords is None:
+            self.coords = SkyCoord(0,0, unit=u.deg)
+
+        qs = qs.annotate(
+            distance=Distance('star__location', (
+                self.coords.ra.to_value(), self.coords.dec.to_value(),
+            )),
+        ).order_by('{}{}'.format(order_prefix, self.sort))
 
         return qs
 

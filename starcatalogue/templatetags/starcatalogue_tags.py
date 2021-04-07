@@ -1,3 +1,6 @@
+from astropy.coordinates import Angle
+from astropy import units as u
+
 from django import template
 
 register = template.Library()
@@ -32,8 +35,5 @@ def param_replace(context, **kwargs):
     return d.urlencode()
 
 @register.simple_tag(takes_context=True)
-def lightcurve_distance(context, lightcurve):
-    if 'coords' not in context:
-        return
-    
-    return context['coords'].separation(lightcurve.star.coords)
+def degrees(context, distance):   
+    return Angle(distance, u.rad).to_string(u.deg)

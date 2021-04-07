@@ -1,6 +1,7 @@
 # Based on django-pgsphere https://github.com/akorotkov/pgsphere
 
 from django.db import models
+from django.db.models.expressions import Func
 from ast import literal_eval as make_tuple
 from django.core.exceptions import ValidationError
 import collections
@@ -78,3 +79,35 @@ class SPointIn(models.Lookup):
         ra, dec = parse_spoint((ra, dec), to_deg=False)
         radius = math.radians(radius)
         return ('(spoint(%s, %s), %s)', (ra, dec, radius))
+
+class Distance(Func):
+    template = '%(expressions)s'
+    arg_joiner = '<->'
+    arity = 2
+    output_field = models.FloatField()
+
+    def as_sql(
+        self,
+        compiler,
+        connection,
+        function=None, 
+        template=None,
+        arg_joiner=None,
+        **extra_context,
+    ):
+        sql, ((ra, dec),) = super().as_sql(
+            compiler,
+            connection,
+            function,
+            template,
+            arg_joiner,
+            **extra_context,
+        )
+
+        lhs, rhs = sql.split(self.arg_joiner)
+        rhs = 'spoint(%s, %s)'
+        sql = self.arg_joiner.join((lhs, rhs))
+
+        ra, dec = parse_spoint((ra, dec), to_deg=False)
+
+        return sql, (ra, dec)
