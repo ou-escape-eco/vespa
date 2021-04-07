@@ -20,9 +20,9 @@ app.autodiscover_tasks()
 
 @app.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(120.0, queue_image_generations.s())
-    sender.add_periodic_task(300, calculate_magnitudes.s())
-    sender.add_periodic_task(60, set_locations.s())
+    sender.add_periodic_task(3600, queue_image_generations.s())
+    sender.add_periodic_task(3600, calculate_magnitudes.s())
+    sender.add_periodic_task(3600, set_locations.s())
 
 @app.task
 def queue_image_generations():
