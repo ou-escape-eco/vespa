@@ -27,6 +27,9 @@ EXPORT_DATA_DESCRIPTION = {
     'Period Length': 'The period length in seconds',
     'RA': 'Right ascension in hours',
     'Dec': 'Declination in degrees',
+    'Maximum magnitude': 'The brightest magnitude for this source',
+    'Minimum magnitude': 'The least bright magnitude for this source',
+    'Mean magnitude': 'The mean magnitude for this source',
     'Classification': 'The candidate variable star type',
     'Classification count': 'How many Zooniverse classifications this entry received',
     'Period uncertainty': 'Whether the correctness of this period is certain or uncertain (based on Zooniverse classifications)',
@@ -58,6 +61,9 @@ def generate_export(export_id):
                 'Period Length': record.period_length,
                 'RA': record.star.ra,
                 'Dec': record.star.dec,
+                'Maximum magnitude': record.star.max_magnitude,
+                'Minimum magnitude': record.star.min_magnitude,
+                'Mean magnitude': record.star.mean_magnitude,
                 'Classification': record.get_classification_display(), 
                 'Classification count': record.classification_count,
                 'Period uncertainty': record.get_period_uncertainty_display(),
@@ -70,6 +76,8 @@ def generate_export(export_id):
             export_zip.writestr('export.csv', export_csv.getvalue())
             export_zip.writestr('fields.yaml', yaml.dump(EXPORT_DATA_DESCRIPTION))
             export_zip.writestr('params.yaml', yaml.dump({
+                'min_magnitude': export.min_magnitude,
+                'max_magnitude': export.max_magnitude,
                 'min_period': export.min_period,
                 'max_period': export.max_period,
                 'certain_period': export.certain_period,

@@ -93,14 +93,14 @@
               <div class="input-group-prepend">
                 <span class="input-group-text" id="mag-min-label">Min</span>
               </div>
-              <input type="text" name="min_mag" class="form-control" placeholder="" value="{% if min_magnitude %}{{ min_magnitude }}{% endif %}" aria-label="Minimum magnitude" aria-describedby="mag-min-label">
+              <input type="text" name="min_magnitude" class="form-control" placeholder="" value="{% if min_magnitude %}{{ min_magnitude }}{% endif %}" aria-label="Minimum magnitude" aria-describedby="mag-min-label">
             </div>    
             
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <span class="input-group-text" id="mag-max-label">Max</span>
               </div>
-              <input type="text" name="max_mag" class="form-control" placeholder="" value="{% if max_magnitude %}{{ max_magnitude }}{% endif %}" aria-label="Maximum magnitude" aria-describedby="mag-max-label">
+              <input type="text" name="max_magnitude" class="form-control" placeholder="" value="{% if max_magnitude %}{{ max_magnitude }}{% endif %}" aria-label="Maximum magnitude" aria-describedby="mag-max-label">
             </div> 
 
                         
@@ -189,6 +189,8 @@
     {% csrf_token %}
     <input type="hidden" name="min_period" value="{% if min_period %}{{ min_period }}{% endif %}">
     <input type="hidden" name="max_period" value="{% if max_period %}{{ max_period }}{% endif %}">
+    <input type="hidden" name="min_magnitude" value="{% if min_magnitude %}{{ min_magnitude }}{% endif %}">
+    <input type="hidden" name="max_magnitude" value="{% if max_magnitude %}{{ max_magnitude }}{% endif %}">
     <input type="hidden" name="certain_period" value="{% if certain_period %}{{ certain_period }}{% endif %}">
     <input type="hidden" name="uncertain_period" value="{% if uncertain_period %}{{ uncertain_period }}{% endif %}">
     <input type="hidden" name="type_pulsator" value="{% if type_pulsator %}{{ type_pulsator }}{% endif %}">

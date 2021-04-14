@@ -187,14 +187,18 @@ class Star(models.Model, ImageGenerator):
             '_max_magnitude': lambda x: x.max(),
         }
 
-        if not force and getattr(self, attr_name) and not numpy.isnan(getattr(self, attr_name)):
+        if not force and getattr(self, attr_name):
             return getattr(self, attr_name)
 
         timeseries = self.timeseries
         if not timeseries:
             return
         
-        mag = 15 - 2.5 * numpy.log(agg_funcs[attr_name](sigma_clip(timeseries['TAMFLUX2'], sigma=OUTLIER_SIGMA_CLIP)))
+        mag = 15 - 2.5 * numpy.log(
+            agg_funcs[attr_name](
+                sigma_clip(timeseries['TAMFLUX2'], sigma=OUTLIER_SIGMA_CLIP)
+            )
+        )
         setattr(self, attr_name, mag)
         self.save()
         return mag
@@ -336,6 +340,8 @@ class DataExport(models.Model):
 
     min_period = models.FloatField(null=True)
     max_period = models.FloatField(null=True)
+    min_magnitude = models.FloatField(null=True)
+    max_magnitude = models.FloatField(null=True)
     certain_period = models.BooleanField(choices=CHECKBOX_CHOICES, default=True)
     uncertain_period = models.BooleanField(choices=CHECKBOX_CHOICES, default=True)
     type_pulsator = models.BooleanField(choices=CHECKBOX_CHOICES, default=True)
@@ -364,6 +370,8 @@ class DataExport(models.Model):
         return {
             'min_period': self.min_period,
             'max_period': self.max_period,
+            'min_magnitude': self.min_magnitude,
+            'max_magnitude': self.max_magnitude,
             'certain_period': self.get_certain_period_display(),
             'uncertain_period': self.get_uncertain_period_display(),
             'type_pulsator': self.get_type_pulsator_display(),

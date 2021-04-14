@@ -17,6 +17,8 @@
             <p class="lead">Something went wrong while generating your export.</p>
             <form action="{% url 'generate_export' %}" method="POST">
                 {% csrf_token %}
+                {% if object.min_magnitude %}<input type="hidden" name="min_magnitude" value="{{ object.min_magnitude }}">{% endif %}
+                {% if object.max_magnitude %}<input type="hidden" name="max_magnitude" value="{{ object.max_magnitude }}">{% endif %}
                 {% if object.min_period %}<input type="hidden" name="min_period" value="{{ object.min_period }}">{% endif %}
                 {% if object.max_period %}<input type="hidden" name="max_period" value="{{ object.max_period }}">{% endif %}
                 {% if object.certain_period %}<input type="hidden" name="certain_period" value="{{ object.get_certain_period_display }}">{% endif %}
@@ -59,6 +61,14 @@
             <tr>
                 <th scope="row">Object Count</th>
                 <td>{{ object.queryset.count }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Minimum Magnitude</th>
+                <td>{{ object.min_magnitude }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Maximum Magnitude</th>
+                <td>{{ object.max_magnitude }}</td>
             </tr>
             <tr>
                 <th scope="row">Minimum Period</th>

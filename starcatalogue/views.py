@@ -65,7 +65,7 @@ class StarListView(ListView):
         qs = qs.filter(period_uncertainty__in=enabled_uncertainties)
 
         try:
-            self.min_magnitude = float(params.get('min_mag', None))
+            self.min_magnitude = float(params.get('min_magnitude', None))
             if self.min_magnitude:
                 qs = qs.filter(star___mean_magnitude__gte=self.min_magnitude)
             else:
@@ -75,7 +75,7 @@ class StarListView(ListView):
             self.min_magnitude = None
         
         try:
-            self.max_magnitude = float(params.get('max_mag', None))
+            self.max_magnitude = float(params.get('max_magnitude', None))
             if self.max_magnitude:
                 qs = qs.filter(star___mean_magnitude__lte=self.max_magnitude)
             else:
@@ -227,6 +227,14 @@ class GenerateExportView(View):
             if not max_period:
                 max_period = None
 
+            min_magnitude = request.POST.get('min_magnitude', None)
+            if not min_magnitude:
+                min_magnitude = None
+
+            max_magnitude = request.POST.get('max_magnitude', None)
+            if not max_magnitude:
+                max_magnitude = None
+
             search_radius = request.POST.get('search_radius', None)
             if not search_radius:
                 search_radius = None
@@ -235,6 +243,8 @@ class GenerateExportView(View):
                 data_version=settings.DATA_VERSION,
                 min_period = min_period,
                 max_period = max_period,
+                min_magnitude = min_magnitude,
+                max_magnitude = max_magnitude,
                 certain_period = DataExport.CHECKBOX_CHOICES_DICT[request.POST.get('certain_period', 'on')],
                 uncertain_period = DataExport.CHECKBOX_CHOICES_DICT[request.POST.get('uncertain_period', 'on')],
                 type_pulsator = DataExport.CHECKBOX_CHOICES_DICT[request.POST.get('type_pulsator', 'on')],
