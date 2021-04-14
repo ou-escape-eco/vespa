@@ -66,7 +66,7 @@ def generate_export(export_id):
             })
 
         export_file = ContentFile(b'')
-        with zipfile.ZipFile(export_file, 'w') as export_zip:
+        with zipfile.ZipFile(export_file, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as export_zip:
             export_zip.writestr('export.csv', export_csv.getvalue())
             export_zip.writestr('fields.yaml', yaml.dump(EXPORT_DATA_DESCRIPTION))
             export_zip.writestr('params.yaml', yaml.dump({
