@@ -6,8 +6,6 @@
 {% block content %}
 <div class="row mt-5">
   <form action="{% url 'browse' %}" method="GET" id="filter_form">
-    <input type="hidden" name="search" value="{% if search %}{{ search }}{% endif %}">
-    <input type="hidden" name="search_radius" value="{% if search_radius %}{{ search_radius }}{% endif %}">
     <div class="col">
       <div class="btn-group filterBar">
         <div class="btn-group">
@@ -50,6 +48,12 @@
                     </label>
                   </div>
                   <div class="form-check">
+                    <input class="form-check-input" type="radio" name="sort" value="star___mean_magnitude" id="sort_mean_magnitude" {% if sort == 'star___mean_magnitude' %}checked{% endif %}>
+                    <label class="form-check-label" for="sort_mean_magnitude">
+                      Mean magnitude
+                    </label>
+                  </div>
+                  <div class="form-check">
                     <input class="form-check-input" type="radio" name="sort" value="period_length" id="sort_period" {% if sort == 'period_length' %}checked{% endif %}>
                     <label class="form-check-label" for="sort_period">
                       Period
@@ -84,20 +88,28 @@
           <button class="btn btn-secondary dropdown-toggle" type="button" id="magnitudeButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Magnitude
           </button>
-          <div class="dropdown-menu px-3" aria-labelledby="magnitudeButton">
+          <div class="dropdown-menu px-3" aria-labelledby="magnitudeButton" style="width: 200px;">
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <span class="input-group-text" id="mag-min-label">Min</span>
               </div>
-              <input type="text" name="min_mag" class="form-control" placeholder="" aria-label="Minimum magnitude" aria-describedby="mag-min-label" disabled>
+              <input type="text" name="min_mag" class="form-control" placeholder="" value="{% if min_magnitude %}{{ min_magnitude }}{% endif %}" aria-label="Minimum magnitude" aria-describedby="mag-min-label">
             </div>    
             
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <span class="input-group-text" id="mag-max-label">Max</span>
               </div>
-              <input type="text" name="max_mag" class="form-control" placeholder="" aria-label="Maximum magnitude" aria-describedby="mag-max-label" disabled>
+              <input type="text" name="max_mag" class="form-control" placeholder="" value="{% if max_magnitude %}{{ max_magnitude }}{% endif %}" aria-label="Maximum magnitude" aria-describedby="mag-max-label">
             </div> 
+
+                        
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="mag-amp-label">Amplitude</span>
+              </div>
+              <input type="text" name="max_mag" class="form-control" placeholder="" value="{% if mag_amplitude %}{{ mag_amplitude }}{% endif %}" aria-label="Amplitude" aria-describedby="mag-amp-label" disabled>
+            </div>
           </div>
         </div>
         <div class="btn-group">

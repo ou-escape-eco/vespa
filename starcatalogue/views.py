@@ -64,6 +64,26 @@ class StarListView(ListView):
 
         qs = qs.filter(period_uncertainty__in=enabled_uncertainties)
 
+        try:
+            self.min_magnitude = float(params.get('min_mag', None))
+            if self.min_magnitude:
+                qs = qs.filter(star___mean_magnitude__gte=self.min_magnitude)
+            else:
+                # To ensure it's None rather than ''
+                self.min_magnitude = None
+        except (ValueError, TypeError):
+            self.min_magnitude = None
+        
+        try:
+            self.max_magnitude = float(params.get('max_mag', None))
+            if self.max_magnitude:
+                qs = qs.filter(star___mean_magnitude__lte=self.max_magnitude)
+            else:
+                # To ensure it's None rather than ''
+                self.max_magnitude = None
+        except (ValueError, TypeError):
+            self.max_magnitude = None
+
         self.type_pulsator = params.get('type_pulsator', 'off')
         self.type_rotator = params.get('type_rotator', 'off')
         self.type_ew = params.get('type_ew', 'off')
@@ -137,6 +157,9 @@ class StarListView(ListView):
             'star__superwasp_id',
             'period_length',
             'classification',
+            'star___mean_magnitude',
+            'star___max_magnitude',
+            'star___min_magnitude'
         )
         self.sort = params.get('sort', None)
         if self.sort not in sort_fields:
@@ -164,6 +187,8 @@ class StarListView(ListView):
         context = super().get_context_data(**kwargs)
         context['min_period'] = self.min_period
         context['max_period'] = self.max_period
+        context['min_magnitude'] = self.min_magnitude
+        context['max_magnitude'] = self.max_magnitude
         context['certain_period'] = self.certain_period
         context['uncertain_period'] = self.uncertain_period
         context['type_pulsator'] = self.type_pulsator

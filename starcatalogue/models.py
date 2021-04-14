@@ -218,8 +218,6 @@ class Star(models.Model, ImageGenerator):
 
     @property
     def min_magnitude(self):
-        self._min_magnitude = None
-        self.save()
         return self.get_magnitude('_min_magnitude')
 
 
