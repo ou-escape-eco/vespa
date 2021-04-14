@@ -5,6 +5,12 @@ from django import template
 
 register = template.Library()
 
+
+@register.simple_tag(takes_context=True)
+def degrees(context, distance):   
+    return Angle(distance, u.rad).to_string(u.deg)
+
+
 # From https://www.caktusgroup.com/blog/2018/10/18/filtering-and-pagination-django/
 @register.simple_tag(takes_context=True)
 def param_replace(context, **kwargs):
@@ -34,9 +40,6 @@ def param_replace(context, **kwargs):
         del d[k]
     return d.urlencode()
 
-@register.simple_tag(takes_context=True)
-def degrees(context, distance):   
-    return Angle(distance, u.rad).to_string(u.deg)
 
 @register.filter('startswith')
 def startswith(text, starts):
