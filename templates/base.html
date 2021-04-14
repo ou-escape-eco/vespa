@@ -1,3 +1,4 @@
+{% load starcatalogue_tags %}
 <!doctype html>
 <html lang="en">
     <head>
@@ -23,16 +24,16 @@
                 {% url 'exoplanets' as exoplanets_url %}
                 {% url 'about' as about_url %}
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item {% if request.path == about_url %}active{% endif %}"><a class="nav-link" href="{{ about_url }}">About</a></li>
-                    <li class="nav-item {% if request.path == exoplanets_url %}active{% endif %}"><a class="nav-link" href="{{ exoplanets_url }}">Exoplanets</a></li>
-                    <li class="nav-item {% if request.path == vespa_url %}active{% endif %}"><a class="nav-link" href="{{ vespa_url }}">Variable Stars</a></li>
+                    <li class="nav-item {% if request.path|startswith:about_url %}active{% endif %}"><a class="nav-link" href="{{ about_url }}">About</a></li>
+                    <li class="nav-item {% if request.path|startswith:exoplanets_url %}active{% endif %}"><a class="nav-link" href="{{ exoplanets_url }}">Exoplanets</a></li>
+                    <li class="nav-item {% if request.path|startswith:vespa_url %}active{% endif %}"><a class="nav-link" href="{{ vespa_url }}">Variable Stars</a></li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Links</a>
-                        <div class="dropdown-menu" aria-labelledby="dropdown01">
-                          <a class="dropdown-item" href="#">Open University</a>
-                          <a class="dropdown-item" href="#">SuperWASP</a>
-                          <a class="dropdown-item" href="#">ASTERICS</a>
-                          <a class="dropdown-item" href="#">Zooniverse</a>
+                        <a class="nav-link dropdown-toggle" href="#" id="nav-links" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Links</a>
+                        <div class="dropdown-menu" aria-labelledby="nav-links">
+                          <a class="dropdown-item" href="https://www.open.ac.uk/">Open University</a>
+                          <a class="dropdown-item" href="https://wasp-planets.net/">WASP Planets</a>
+                          <a class="dropdown-item" href="https://www.asterics2020.eu/">ASTERICS</a>
+                          <a class="dropdown-item" href="https://www.zooniverse.org/projects/ajnorton/superwasp-variable-stars">Zooniverse</a>
                         </div>
                       </li>
                 </ul>

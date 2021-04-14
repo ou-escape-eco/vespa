@@ -37,3 +37,9 @@ def param_replace(context, **kwargs):
 @register.simple_tag(takes_context=True)
 def degrees(context, distance):   
     return Angle(distance, u.rad).to_string(u.deg)
+
+@register.filter('startswith')
+def startswith(text, starts):
+    if isinstance(text, str):
+        return text.startswith(starts)
+    return False
