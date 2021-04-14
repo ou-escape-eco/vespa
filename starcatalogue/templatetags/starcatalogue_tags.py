@@ -1,3 +1,5 @@
+import math
+
 from astropy.coordinates import Angle
 from astropy import units as u
 
@@ -9,6 +11,11 @@ register = template.Library()
 @register.simple_tag(takes_context=True)
 def degrees(context, distance):   
     return Angle(distance, u.rad).to_string(u.deg)
+
+
+@register.filter('isnan')
+def isnan(x):
+    return math.isnan(x)
 
 
 # From https://www.caktusgroup.com/blog/2018/10/18/filtering-and-pagination-django/
