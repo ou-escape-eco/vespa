@@ -248,7 +248,7 @@ class FoldedLightcurve(models.Model, ImageGenerator):
         (UNCERTAIN, 'Uncertain'),
     ]
 
-    CURRENT_IMAGE_VERSION = 0.7
+    CURRENT_IMAGE_VERSION = 0.836
 
     star = models.ForeignKey(to=Star, on_delete=models.CASCADE)
 

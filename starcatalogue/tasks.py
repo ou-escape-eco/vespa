@@ -8,12 +8,11 @@ import seaborn
 
 from astropy.stats import sigma_clip
 from astropy.table import vstack
+from astropy.units import Quantity
 
 from celery import shared_task
 
 from django.core.files.base import ContentFile
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 from matplotlib import pyplot
 
@@ -139,13 +138,13 @@ def generate_lightcurve_images(lightcurve_id):
     ts = vstack([ts, ts_extend])
     ts_flux = sigma_clip(ts['TAMFLUX2'], sigma=OUTLIER_SIGMA_CLIP)
     ts_data = {
-        'time': ts.time.jd,
+        'phase': (ts.time / epoch_length) - Quantity(0.5, unit=None),
         'flux': ts_flux,
     }
     fig = pyplot.figure()
     plot = seaborn.scatterplot(
         data=ts_data,
-        x='time',
+        x='phase',
         y='flux',
         alpha=0.5,
         s=1,
