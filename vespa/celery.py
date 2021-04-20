@@ -49,6 +49,8 @@ def queue_image_generations():
 def calculate_magnitudes():
     from starcatalogue.models import Star
     for star in Star.objects.filter(
+        fits_error_count__lt=settings.FITS_DOWNLOAD_ATTEMPTS
+    ).filter(
         Q(fits_file__isnull=False)
         & (
             Q(_min_magnitude__isnull=True)
