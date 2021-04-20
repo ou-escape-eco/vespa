@@ -22,6 +22,7 @@ from .fields import SPointField
 
 
 OUTLIER_SIGMA_CLIP = 5
+FLUX_MAX_CLIP = 2e5
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +59,8 @@ class ImageGenerator(object):
 
 
 class Star(models.Model, ImageGenerator):
-    CURRENT_IMAGE_VERSION = 0.9
+    CURRENT_IMAGE_VERSION = 0.91
+    CURRENT_STATS_VERSION = 0.1
 
     superwasp_id = models.CharField(unique=True, max_length=26)
     fits_file = models.FileField(null=True, upload_to=star_upload_to)
@@ -74,8 +76,13 @@ class Star(models.Model, ImageGenerator):
     _min_magnitude = models.FloatField(null=True)
     _mean_magnitude = models.FloatField(null=True)
     _max_magnitude = models.FloatField(null=True)
+    stats_version = models.FloatField(null=True)
 
     location = SPointField(null=True)
+
+    @classmethod
+    def outlier_clip(cls, flux):
+        return sigma_clip(numpy.ma.masked_greater(flux, FLUX_MAX_CLIP), sigma=OUTLIER_SIGMA_CLIP)
 
     @property
     def coords_str(self):
@@ -187,17 +194,20 @@ class Star(models.Model, ImageGenerator):
             '_max_magnitude': lambda x: x.max(),
         }
 
-        if not force and getattr(self, attr_name):
+        if (
+            not force and 
+            self.stats_version is not None and
+            self.stats_version >= self.CURRENT_STATS_VERSION and 
+            getattr(self, attr_name)
+        ):
             return getattr(self, attr_name)
 
         timeseries = self.timeseries
         if not timeseries:
             return
-        
+
         mag = 15 - 2.5 * numpy.log(
-            agg_funcs[attr_name](
-                sigma_clip(timeseries['TAMFLUX2'], sigma=OUTLIER_SIGMA_CLIP)
-            )
+            agg_funcs[attr_name](Star.outlier_clip(timeseries['TAMFLUX2']))
         )
         setattr(self, attr_name, mag)
         self.save()
@@ -248,7 +258,7 @@ class FoldedLightcurve(models.Model, ImageGenerator):
         (UNCERTAIN, 'Uncertain'),
     ]
 
-    CURRENT_IMAGE_VERSION = 0.836
+    CURRENT_IMAGE_VERSION = 0.9
 
     star = models.ForeignKey(to=Star, on_delete=models.CASCADE)
 

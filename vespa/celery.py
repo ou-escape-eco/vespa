@@ -56,6 +56,8 @@ def calculate_magnitudes():
             Q(_min_magnitude__isnull=True)
             | Q(_max_magnitude__isnull=True)
             | Q(_mean_magnitude__isnull=True)
+            | Q(stats_version__lt=Star.CURRENT_STATS_VERSION)
+            | Q(stats_version__isnull=True)
         )
     )[:1000]:
         star.calculate_magnitudes()

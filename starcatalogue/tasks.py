@@ -6,7 +6,6 @@ import zipfile
 
 import seaborn
 
-from astropy.stats import sigma_clip
 from astropy.table import vstack
 from astropy.units import Quantity
 
@@ -19,7 +18,7 @@ from matplotlib import pyplot
 
 from PIL import Image
 
-from .models import DataExport, Star, FoldedLightcurve, OUTLIER_SIGMA_CLIP
+from .models import DataExport, Star, FoldedLightcurve
 
 
 EXPORT_DATA_DESCRIPTION = {
@@ -137,7 +136,7 @@ def generate_lightcurve_images(lightcurve_id):
     ts_extend = ts.copy()
     ts_extend['time'] = ts_extend['time'] + epoch_length
     ts = vstack([ts, ts_extend])
-    ts_flux = sigma_clip(ts['TAMFLUX2'], sigma=OUTLIER_SIGMA_CLIP)
+    ts_flux = Star.outlier_clip(ts['TAMFLUX2'])
     ts_data = {
         'phase': (ts.time / epoch_length) - Quantity(0.5, unit=None),
         'flux': ts_flux,
@@ -178,7 +177,7 @@ def generate_star_images(star_id):
     ts = star.timeseries
     if not ts:
         return
-    ts_flux = sigma_clip(ts['TAMFLUX2'], sigma=OUTLIER_SIGMA_CLIP)
+    ts_flux = Star.outlier_clip(ts['TAMFLUX2'])
     ts_data = {
         'time': ts.time.jd,
         'flux': ts_flux,
