@@ -12,6 +12,7 @@ from astropy.units import Quantity
 
 from celery import shared_task
 
+from django.conf import settings
 from django.core.files.base import ContentFile
 
 from matplotlib import pyplot
@@ -104,7 +105,7 @@ def generate_export(export_id):
 @shared_task
 def download_fits(star_id):
     star = Star.objects.get(id=star_id)
-    if star.fits_error_count >= 5:
+    if star.fits_error_count >= settings.FITS_DOWNLOAD_ATTEMPTS:
         return
     encoded_params = urllib.parse.urlencode(
         {'objid': star.superwasp_id.replace('1SWASP', '1SWASP ')},

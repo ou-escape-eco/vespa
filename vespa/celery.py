@@ -1,6 +1,8 @@
 import os
 
 from celery import Celery
+
+from django.conf import settings
 from django.db.models import Q
 
 
@@ -27,16 +29,20 @@ def setup_periodic_tasks(sender, **kwargs):
 @app.task
 def queue_image_generations():
     from starcatalogue.models import Star, FoldedLightcurve
-    for star in Star.objects.filter(fits_error_count__lt=5).filter(
+    for star in Star.objects.filter(
+        fits_error_count__lt=settings.FITS_DOWNLOAD_ATTEMPTS
+    ).filter(
         Q(image_version=None) 
         | Q(image_version__lt=Star.CURRENT_IMAGE_VERSION)
-    )[:10]:
+    )[:1000]:
         star.get_image_location()
 
-    for lightcurve in FoldedLightcurve.objects.filter(star__fits_error_count__lt=5).filter(
+    for lightcurve in FoldedLightcurve.objects.filter(
+        star__fits_error_count__lt=settings.FITS_DOWNLOAD_ATTEMPTS
+    ).filter(
         Q(image_version=None) 
         | Q(image_version__lt=FoldedLightcurve.CURRENT_IMAGE_VERSION)
-    )[:10]:
+    )[:1000]:
         lightcurve.get_image_location()
 
 @app.task
@@ -49,7 +55,7 @@ def calculate_magnitudes():
             | Q(_max_magnitude__isnull=True)
             | Q(_mean_magnitude__isnull=True)
         )
-    )[:100]:
+    )[:1000]:
         star.calculate_magnitudes()
 
 @app.task

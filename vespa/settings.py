@@ -137,3 +137,4 @@ CELERY_BROKER_URL = 'amqp://guest:guest@rabbitmq/vespa'
 CELERY_RESULT_BACKEND = 'django-db'
 
 DATA_VERSION = 0.7
+FITS_DOWNLOAD_ATTEMPTS = 5
