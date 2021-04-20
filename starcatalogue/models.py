@@ -210,6 +210,7 @@ class Star(models.Model, ImageGenerator):
             agg_funcs[attr_name](Star.outlier_clip(timeseries['TAMFLUX2']))
         )
         setattr(self, attr_name, mag)
+        self.stats_version = self.CURRENT_STATS_VERSION
         self.save()
         return mag
 
