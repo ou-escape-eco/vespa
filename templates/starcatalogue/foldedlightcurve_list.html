@@ -223,7 +223,7 @@
             <th scope="col">Mean Magnitude</th>
             <th scope="col">Period (seconds)</th>
             <th scope="col">Majority Classification</th>
-            <th scope="col">Period Uncertainty</th>
+            <th scope="col">Folding flag</th>
             <th scope="col">RA</th>
             <th scope="col">Dec</th>
             <th scope="col">Lightcurve</th>
@@ -260,7 +260,7 @@
                 <td>{{ lightcurve.star.mean_magnitude|floatformat:2 }}</td>
               </tr>
               <tr>
-                <th scope="row">Period uncertainty</th>
+                <th scope="row">Folding flag</th>
                 <td>{{ lightcurve.get_period_uncertainty_display }}</td>
               </tr>
               <tr>
