@@ -60,7 +60,7 @@ class ImageGenerator(object):
 
 class Star(models.Model, ImageGenerator):
     CURRENT_IMAGE_VERSION = 0.91
-    CURRENT_STATS_VERSION = 0.1
+    CURRENT_STATS_VERSION = 0.2
 
     superwasp_id = models.CharField(unique=True, max_length=26)
     fits_file = models.FileField(null=True, upload_to=star_upload_to)
@@ -82,7 +82,16 @@ class Star(models.Model, ImageGenerator):
 
     @classmethod
     def outlier_clip(cls, flux):
-        return sigma_clip(numpy.ma.masked_greater(flux, FLUX_MAX_CLIP), sigma=OUTLIER_SIGMA_CLIP)
+        return sigma_clip(
+            numpy.ma.masked_greater(
+                numpy.ma.masked_less(
+                    flux,
+                    -FLUX_MAX_CLIP,
+                ),
+                FLUX_MAX_CLIP
+            ),
+            sigma=OUTLIER_SIGMA_CLIP
+        )
 
     @property
     def coords_str(self):
