@@ -59,7 +59,7 @@ class ImageGenerator(object):
 
 
 class Star(models.Model, ImageGenerator):
-    CURRENT_IMAGE_VERSION = 0.91
+    CURRENT_IMAGE_VERSION = 0.92
     CURRENT_STATS_VERSION = 0.2
 
     superwasp_id = models.CharField(unique=True, max_length=26)
@@ -268,7 +268,7 @@ class FoldedLightcurve(models.Model, ImageGenerator):
         (UNCERTAIN, 'Uncertain'),
     ]
 
-    CURRENT_IMAGE_VERSION = 0.9
+    CURRENT_IMAGE_VERSION = 0.91
 
     star = models.ForeignKey(to=Star, on_delete=models.CASCADE)
 
