@@ -60,7 +60,7 @@ class ImageGenerator(object):
 
 class Star(models.Model, ImageGenerator):
     CURRENT_IMAGE_VERSION = 0.92
-    CURRENT_STATS_VERSION = 0.3
+    CURRENT_STATS_VERSION = 0.31
 
     superwasp_id = models.CharField(unique=True, max_length=26)
     fits_file = models.FileField(null=True, upload_to=star_upload_to)
@@ -196,41 +196,31 @@ class Star(models.Model, ImageGenerator):
     def asassn_url(self):
         return f'https://asas-sn.osu.edu/photometry?ra={self.ra_quoted}&dec={self.dec_quoted}&radius=2'
 
-    def get_magnitude(self, attr_name='_mean_magnitude', force=False):
+    def get_magnitude(self, attr_name='_mean_magnitude'):
+        if (
+            self.stats_version is None or
+            self.stats_version < self.CURRENT_STATS_VERSION or 
+            getattr(self, attr_name) is None
+        ):
+            self.calculate_magnitudes()
+
+        return getattr(self, attr_name)
+
+    def calculate_magnitudes(self):
         agg_funcs = {
             '_mean_magnitude': lambda x: x.mean(),
             '_min_magnitude': lambda x: x.min(),
             '_max_magnitude': lambda x: x.max(),
         }
-
-        if (
-            not force and 
-            self.stats_version is not None and
-            self.stats_version >= self.CURRENT_STATS_VERSION and 
-            getattr(self, attr_name)
-        ):
-            return getattr(self, attr_name)
-
         timeseries = self.timeseries
         if not timeseries:
             return
-
-        mag = 15 - 2.5 * numpy.log10(
-            agg_funcs[attr_name](Star.outlier_clip(timeseries['TAMFLUX2']))
-        )
-        setattr(self, attr_name, mag)
+        flux = Star.outlier_clip(timeseries['TAMFLUX2'])
+        for attr_name, agg_func in agg_funcs.items():
+            mag = 15 - 2.5 * numpy.log10(agg_func(flux))
+            setattr(self, attr_name, mag)
         self.stats_version = self.CURRENT_STATS_VERSION
         self.save()
-        return mag
-
-    def calculate_magnitudes(self, force=False):
-        attrs = (
-           '_mean_magnitude',
-           '_min_magnitude',
-           '_max_magnitude',
-        )
-        for attr_name in attrs:
-            self.get_magnitude(attr_name, force=force)
 
     @property
     def mean_magnitude(self):
