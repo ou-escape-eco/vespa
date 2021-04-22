@@ -60,7 +60,7 @@ class ImageGenerator(object):
 
 class Star(models.Model, ImageGenerator):
     CURRENT_IMAGE_VERSION = 0.92
-    CURRENT_STATS_VERSION = 0.2
+    CURRENT_STATS_VERSION = 0.3
 
     superwasp_id = models.CharField(unique=True, max_length=26)
     fits_file = models.FileField(null=True, upload_to=star_upload_to)
@@ -215,7 +215,7 @@ class Star(models.Model, ImageGenerator):
         if not timeseries:
             return
 
-        mag = 15 - 2.5 * numpy.log(
+        mag = 15 - 2.5 * numpy.log10(
             agg_funcs[attr_name](Star.outlier_clip(timeseries['TAMFLUX2']))
         )
         setattr(self, attr_name, mag)
